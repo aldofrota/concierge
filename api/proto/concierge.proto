@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package concierge;
+
+option go_package = "./proto/v1/Concierge";
+
+service Concierge {
+    rpc Rollout (Request) returns (Response) {}
+}
+
+message Request {
+  string flagger = 1;
+  string id = 2;
+}
+
+message Response {
+  bool rollout = 1;
+}

@@ -1,0 +1,40 @@
+services:
+  redis-concierge:
+    image: redis:6.2-alpine
+    container_name: redis-concierge
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning
+    volumes:
+      - cache:/data
+
+  concierge-api:
+    build:
+      context: ./api
+      dockerfile: .docker/dockerfiles/Dockerfile
+    entrypoint: ["bash", "./.docker/entrypoints/entrypoint-dev.sh"]
+    container_name: concierge-api
+    restart: always
+    healthcheck:
+      test:
+        ["CMD", "bash", "-c", "curl -f http://localhost:9989/health || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    tty: true
+    ports:
+      - 50053:50051
+      - 9989:9989
+    volumes:
+      - .:/usr/concierge/app
+    environment:
+      PORT: 9989
+      PORT_GRPC: 50051
+      REDIS_HOST: redis-concierge
+      REDIS_PORT: 6379
+
+volumes:
+  cache:
+    driver: local
