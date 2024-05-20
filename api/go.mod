@@ -1,4 +1,4 @@
-module repo.tallos.com.br/tallos/development/tallos-chat/support/concierge
+module github.com/aldofrota/concierge
 
 go 1.22.2
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/aldofrota/concierge/data/protocols"
 	"github.com/go-redis/redis"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/data/protocols"
 )
 
 type RedisHelper struct {

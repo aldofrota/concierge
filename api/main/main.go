@@ -11,9 +11,9 @@ import (
 
 	"gopkg.in/DataDog/dd-trace-go.v1/ddtrace/tracer"
 
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/main/factories"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/main/grpc"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/main/routes"
+	"github.com/aldofrota/concierge/main/factories"
+	"github.com/aldofrota/concierge/main/grpc"
+	"github.com/aldofrota/concierge/main/routes"
 )
 
 //	@title			Mis Rollouts HUB

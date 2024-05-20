@@ -6,9 +6,9 @@ import (
 	"net"
 	"os"
 
+	pb "github.com/aldofrota/concierge/proto/v1/Concierge"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	pb "repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/proto/v1/Concierge"
 )
 
 var server *grpc.Server

@@ -3,8 +3,8 @@ package grpc
 import (
 	"context"
 
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/main/factories"
-	pb "repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/proto/v1/Concierge"
+	"github.com/aldofrota/concierge/main/factories"
+	pb "github.com/aldofrota/concierge/proto/v1/Concierge"
 )
 
 // Implemente o serviço definido no arquivo .proto

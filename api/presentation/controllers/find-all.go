@@ -3,9 +3,9 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/aldofrota/concierge/domain/usecases"
+	"github.com/aldofrota/concierge/presentation/protocols"
 	"github.com/gin-gonic/gin"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/domain/usecases"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/presentation/protocols"
 )
 
 type ConciergeFindAllController struct {

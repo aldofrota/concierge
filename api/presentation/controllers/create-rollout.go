@@ -3,10 +3,10 @@ package controllers
 import (
 	"net/http"
 
+	protocolsData "github.com/aldofrota/concierge/data/protocols"
+	"github.com/aldofrota/concierge/domain/usecases"
+	"github.com/aldofrota/concierge/presentation/protocols"
 	"github.com/gin-gonic/gin"
-	protocolsData "repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/data/protocols"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/domain/usecases"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/presentation/protocols"
 )
 
 type ConciergeCreateController struct {

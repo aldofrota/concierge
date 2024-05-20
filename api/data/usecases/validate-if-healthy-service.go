@@ -4,8 +4,8 @@ import (
 	"errors"
 	"sync"
 
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/data/protocols"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/domain/usecases"
+	"github.com/aldofrota/concierge/data/protocols"
+	"github.com/aldofrota/concierge/domain/usecases"
 )
 
 // ValidateIfHealthy is a use case that validates if the service is healthy

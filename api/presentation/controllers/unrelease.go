@@ -3,20 +3,20 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/aldofrota/concierge/domain/usecases"
+	"github.com/aldofrota/concierge/presentation/protocols"
 	"github.com/gin-gonic/gin"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/domain/usecases"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/presentation/protocols"
 )
 
-type ConciergeReleaseController struct {
-	ConciergeReleaseCase usecases.ConciergeRelease
+type ConciergeUnreleaseController struct {
+	ConciergeUnreleaseCase usecases.ConciergeUnrelease
 }
 
-func NewConciergeReleaseController(ConciergeReleaseCase usecases.ConciergeRelease) protocols.Controller {
-	return &ConciergeReleaseController{ConciergeReleaseCase}
+func NewConciergeUnreleaseController(ConciergeUnreleaseCase usecases.ConciergeUnrelease) protocols.Controller {
+	return &ConciergeUnreleaseController{ConciergeUnreleaseCase}
 }
 
-func (controller *ConciergeReleaseController) Handle(ctx *gin.Context) protocols.HttpResponse {
+func (controller *ConciergeUnreleaseController) Handle(ctx *gin.Context) protocols.HttpResponse {
 
 	var requestBody protocols.RequestRelease
 	flagger := ctx.Param("flagger")
@@ -31,7 +31,7 @@ func (controller *ConciergeReleaseController) Handle(ctx *gin.Context) protocols
 		}
 	}
 
-	err := controller.ConciergeReleaseCase.Release(flagger, requestBody.Ids)
+	err := controller.ConciergeUnreleaseCase.Unrelease(flagger, requestBody.Ids)
 	if err != nil {
 		return protocols.HttpResponse{
 			StatusCode: http.StatusInternalServerError,
@@ -44,7 +44,7 @@ func (controller *ConciergeReleaseController) Handle(ctx *gin.Context) protocols
 	return protocols.HttpResponse{
 		StatusCode: http.StatusOK,
 		Body: map[string]interface{}{
-			"message": "Companies added in rollout",
+			"message": "Companies removed from implementation",
 		},
 	}
 }

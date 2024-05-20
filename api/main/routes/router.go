@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aldofrota/concierge/main/middlewares"
 	"github.com/gin-gonic/gin"
 	httptrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/main/middlewares"
 )
 
 var router = gin.New()

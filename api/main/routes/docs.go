@@ -1,10 +1,10 @@
 package routes
 
 import (
+	_ "github.com/aldofrota/concierge/main/docs"
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	_ "repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/main/docs"
 )
 
 func addDocsRoutes(rg *gin.RouterGroup) {

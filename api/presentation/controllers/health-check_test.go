@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"testing"
 
+	"github.com/aldofrota/concierge/presentation/controllers"
 	"github.com/stretchr/testify/assert"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/presentation/controllers"
 )
 
 type ValidateIfHealthyUseCaseSpy struct {

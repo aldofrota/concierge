@@ -1,10 +1,10 @@
 package factories
 
 import (
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/data/usecases"
-	redisHelper "repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/infra/db/redis"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/presentation/controllers"
-	"repo.tallos.com.br/tallos/development/tallos-chat/support/concierge/presentation/protocols"
+	"github.com/aldofrota/concierge/data/usecases"
+	redisHelper "github.com/aldofrota/concierge/infra/db/redis"
+	"github.com/aldofrota/concierge/presentation/controllers"
+	"github.com/aldofrota/concierge/presentation/protocols"
 )
 
 // HealthCheck godoc
