@@ -71,7 +71,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:9989",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Mis Rollouts HUB",
+	Title:            "Concierge",
 	Description:      "API para gerenciamento de rollouts",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

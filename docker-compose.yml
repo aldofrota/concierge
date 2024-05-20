@@ -9,6 +9,15 @@ services:
     volumes:
       - cache:/data
 
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
   api:
     build:
       context: ./api
@@ -34,7 +43,10 @@ services:
       PORT_GRPC: 50051
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      MONGO_URI: ""
 
 volumes:
+  mongodb_data:
+    driver: local
   cache:
     driver: local

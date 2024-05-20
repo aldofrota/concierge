@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "API para gerenciamento de rollouts",
-        "title": "Mis Rollouts HUB",
+        "title": "Concierge",
         "contact": {},
         "version": "0.0.1"
     },

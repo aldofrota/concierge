@@ -10,7 +10,7 @@ host: localhost:9989
 info:
   contact: {}
   description: API para gerenciamento de rollouts
-  title: Mis Rollouts HUB
+  title: Concierge
   version: 0.0.1
 paths:
   /health:

@@ -14,13 +14,12 @@ type Concierge struct {
 
 // Implemente o método do serviço
 func (s *Concierge) Rollout(ctx context.Context, request *pb.Request) (*pb.Response, error) {
-
 	usecase := factories.NewConciergeGrpcFactory()
 	inRollout, err := usecase.Rollout(request.Flagger, request.Id)
 	if err != nil {
 		return &pb.Response{
 			Rollout: false,
-		}, nil
+		}, err
 	}
 
 	return &pb.Response{
