@@ -1,0 +1,116 @@
+.main-login {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  .logo-mobile {
+    display: none;
+    height: 60px;
+    position: absolute;
+    top: 20px;
+  }
+
+  .left {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+    background: rgb(170, 0, 255);
+    background: linear-gradient(111deg, #205896 0%, #72a1e5 100%);
+    background-size: 400% 400%;
+    animation: background 10s ease infinite;
+
+    .logo {
+      height: 80px;
+      position: absolute;
+      top: 20px;
+    }
+    h1 {
+      font-size: 30px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+    .social-medias {
+      position: absolute;
+      bottom: 20px;
+      a {
+        font-size: 27px;
+        color: #ffffff;
+      }
+    }
+  }
+  .right {
+    height: 100%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+
+    .effects {
+      height: 550px;
+      width: 550px;
+      border-radius: 50%;
+      border: 1px solid #ffa500;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      rotate: -30deg;
+      opacity: 0.1;
+      transform: translate(50%, 40%);
+
+      .ef-1 {
+        height: 30px;
+        width: 30px;
+        background-color: #205896;
+        border-radius: 50%;
+        position: absolute;
+        top: -15px;
+      }
+      .ef-2 {
+        height: 400px;
+        width: 400px;
+        border-radius: 50%;
+        border: 70px solid #205896;
+      }
+    }
+  }
+  .forms-app {
+    position: absolute;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 5px #ccc;
+    display: flex;
+    flex-direction: column;
+  }
+}
+@keyframes background {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (max-width: 1023px) {
+  .main-login {
+    .logo-mobile {
+      display: block;
+    }
+    .left,
+    .right {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,89 @@
+.main-navbar {
+  height: 60px;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  position: -webkit-sticky; /* Para suporte ao Safari */
+  position: sticky;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  background-color: var(--bg-color);
+
+  .logo {
+    padding: 0 17px;
+    img {
+      height: 40px;
+    }
+  }
+
+  .itens {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 15px;
+    margin-left: 100px;
+
+    .item {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 0 20px;
+      color: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      user-select: none;
+      border-radius: 20px;
+      background-color: #ffffff;
+      color: var(--text-dark);
+      box-shadow: 0 4px 4px rgba($color: #000000, $alpha: 0.25);
+    }
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    position: absolute;
+    right: 0;
+  }
+}
+.sub-item {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: start;
+  font-size: 15px;
+
+  .icon {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 1600px) {
+  .main-navbar {
+    height: 50px;
+
+    .logo {
+      img {
+        height: 30px;
+      }
+    }
+    .itens {
+      margin-left: 50px;
+
+      .item {
+        height: 30px;
+        font-size: 12px;
+        padding: 0 15px;
+      }
+    }
+  }
+}

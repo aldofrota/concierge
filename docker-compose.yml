@@ -37,13 +37,27 @@ services:
       - 50051:50051
       - 9989:9989
     volumes:
-      - ./api:/usr/concierge/app
+      - ./api:/usr/concierge/api
     environment:
       PORT: 9989
       PORT_GRPC: 50051
       REDIS_HOST: redis
       REDIS_PORT: 6379
-      MONGO_URI: ""
+      MONGO_URI: mongodb://mongodb/concierge
+
+  app:
+    build:
+      context: ./app
+      dockerfile: ./.docker/Dockerfile
+    container_name: app
+    entrypoint: sh ./.docker/entrypoint.sh
+    restart: always
+    depends_on:
+      - api
+    ports:
+      - 3000:5173
+    volumes:
+      - ./app:/usr/concierge/app
 
 volumes:
   mongodb_data:

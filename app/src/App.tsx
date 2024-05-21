@@ -1,5 +1,11 @@
 import React, { useState } from "react";
 import {
+  Navigate,
+  Route,
+  Routes,
+  BrowserRouter as Router,
+} from "react-router-dom";
+import {
   DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
@@ -7,7 +13,15 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
+import { Breadcrumb, ConfigProvider, Layout, Menu, theme } from "antd";
+
+// Rotas
+import Home from "./views/Home";
+import NotFound from "./views/Notfound";
+import Users from "./views/Users";
+import Rollouts from "./views/Rollouts";
+import { StorageServiceImpl } from "./services/storage";
+import Login from "./views/Login";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -43,49 +57,103 @@ const items: MenuItem[] = [
 ];
 
 const App: React.FC = () => {
+  const storage = new StorageServiceImpl();
   const [collapsed, setCollapsed] = useState(false);
+
+  const isAuthenticated = () => {
+    const token = storage.getData("token");
+    return !!token;
+  };
+
+  return (
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#205896",
+        },
+      }}
+    >
+      <Router>
+        <Routes>
+          {/* Rota de Login */}
+          <Route path="/login" element={<Login />} />
+
+          {/* Rotas protegidas */}
+          <Route
+            path="/*"
+            element={
+              isAuthenticated() ? (
+                <ProtectedRoutes
+                  collapsed={collapsed}
+                  setCollapsed={setCollapsed}
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+        </Routes>
+      </Router>
+    </ConfigProvider>
+  );
+};
+
+const ProtectedRoutes: React.FC<{
+  collapsed: boolean;
+  setCollapsed: (value: boolean) => void;
+}> = ({ collapsed, setCollapsed }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(value) => setCollapsed(value)}
-      >
-        <div className="demo-logo-vertical" />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-        />
-      </Sider>
-      <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
-        <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
-          <div
-            style={{
-              padding: 24,
-              minHeight: 360,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            Bill is a cat.
-          </div>
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
-        </Footer>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#205896",
+        },
+      }}
+    >
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
+          <div className="demo-logo-vertical" />
+          <Menu
+            theme="dark"
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+            items={items}
+          />
+        </Sider>
+        <Layout>
+          <Header style={{ padding: 0, background: colorBgContainer }} />
+          <Content style={{ margin: "0 16px" }}>
+            <Breadcrumb style={{ margin: "16px 0" }}></Breadcrumb>
+            <div
+              style={{
+                padding: 24,
+                minHeight: 360,
+                background: colorBgContainer,
+                borderRadius: borderRadiusLG,
+              }}
+            >
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/rollouts" element={<Rollouts />} />
+                <Route path="/users" element={<Users />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </Content>
+          <Footer style={{ textAlign: "center" }}>
+            Concierge ©{new Date().getFullYear()} Created by Aldo Frota
+          </Footer>
+        </Layout>
       </Layout>
-    </Layout>
+    </ConfigProvider>
   );
 };
 

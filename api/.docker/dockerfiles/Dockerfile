@@ -1,6 +1,6 @@
 FROM golang:1.22 AS builder
 
-WORKDIR /usr/concierge/app
+WORKDIR /usr/concierge/api
 
 RUN go install github.com/cosmtrek/air@latest
 RUN go install github.com/swaggo/swag/cmd/swag@latest
