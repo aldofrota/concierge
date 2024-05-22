@@ -3,6 +3,7 @@ package helpers
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/aldofrota/concierge/data/protocols"
@@ -17,20 +18,48 @@ func NewRedisService(client *redis.Client) protocols.Redis {
 	return &RedisHelper{client}
 }
 
-func (helper RedisHelper) FindAll() ([]string, error) {
+func (helper RedisHelper) FindAll() ([]protocols.FlagPayload, error) {
 	pattern := "rollout:*"
 	// Recuperar a estrutura existente do Redis
 	keys, err := helper.client.Keys(pattern).Result()
 	if err != nil {
-		return nil, err
+		return []protocols.FlagPayload{}, err
 	}
 
-	// Remover o prefixo "rollout:" de cada chave
-	for i, key := range keys {
-		keys[i] = strings.TrimPrefix(key, "rollout:")
+	var payloads []protocols.FlagPayload
+
+	for _, key := range keys {
+		// Remover o prefixo "rollout:" de cada chave
+		keyWithoutPrefix := strings.TrimPrefix(key, "rollout:")
+
+		// Recuperar o valor da chave
+		value, err := helper.client.Get(key).Result()
+		if err != nil {
+			return []protocols.FlagPayload{}, err
+		}
+
+		// Deserializar o valor para FlagPayload
+		var payload protocols.FlagPayload
+		err = json.Unmarshal([]byte(value), &payload)
+		if err != nil {
+			return []protocols.FlagPayload{}, err
+		}
+
+		// Criar array com a quantidade de IDs
+		idsLen := []string{strconv.Itoa(len(payload.IDs))}
+		// Remover os IDs
+		cleanPayload := protocols.FlagPayload{
+			Flagger:      keyWithoutPrefix,
+			ExpirationAt: payload.ExpirationAt,
+			FullRollout:  payload.FullRollout,
+			Description:  payload.Description,
+			IDs:          idsLen,
+		}
+
+		payloads = append(payloads, cleanPayload)
 	}
 
-	return keys, nil
+	return payloads, nil
 }
 
 func (helper RedisHelper) FindFlagger(flagger string) (protocols.FlagPayload, error) {
@@ -94,7 +123,6 @@ func (helper RedisHelper) FindFlaggersCompany(id string) ([]string, error) {
 		// Caso não tenha nenhum rollout é rotornado um array vazio
 		return []string{}, nil
 	}
-
 }
 
 func (helper RedisHelper) CreateFlagger(payload protocols.FlagPayload) error {

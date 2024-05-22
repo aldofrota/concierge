@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Navigate,
   Route,
   Routes,
   BrowserRouter as Router,
+  useNavigate,
+  useLocation,
 } from "react-router-dom";
 import {
-  DesktopOutlined,
-  FileOutlined,
+  DeploymentUnitOutlined,
   PieChartOutlined,
-  TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Breadcrumb, ConfigProvider, Layout, Menu, theme } from "antd";
+import locale from "antd/locale/pt_BR";
 
 // Rotas
 import Home from "./views/Home";
@@ -22,6 +23,7 @@ import Users from "./views/Users";
 import Rollouts from "./views/Rollouts";
 import { StorageServiceImpl } from "./services/storage";
 import Login from "./views/Login";
+import MenuProfile from "./components/MenuProfile";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -42,18 +44,9 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem("Option 1", "1", <PieChartOutlined />),
-  getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
-  ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
-  ]),
-  getItem("Files", "9", <FileOutlined />),
+  getItem("Dados", "/dados", <PieChartOutlined />),
+  getItem("Rollouts", "/rollouts", <DeploymentUnitOutlined />),
+  getItem("Usuários", "/users", <UserOutlined />),
 ];
 
 const App: React.FC = () => {
@@ -61,7 +54,9 @@ const App: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const isAuthenticated = () => {
-    const token = storage.getData("token");
+    // const token = storage.getData("token");
+    const token = true;
+
     return !!token;
   };
 
@@ -105,9 +100,25 @@ const ProtectedRoutes: React.FC<{
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const [activeRoute, setActiveRoute] = useState(["/dados"]);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleMenuClick: MenuProps["onClick"] = (e) => {
+    setActiveRoute([e.key]);
+    navigate(e.key);
+  };
+
+  useEffect(() => {
+    if (location.pathname !== activeRoute[0]) {
+      navigate(activeRoute[0]);
+    }
+  }, [location]);
 
   return (
     <ConfigProvider
+      locale={locale}
       theme={{
         token: {
           colorPrimary: "#205896",
@@ -120,16 +131,28 @@ const ProtectedRoutes: React.FC<{
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
         >
-          <div className="demo-logo-vertical" />
+          <div className="logo-menu">
+            {collapsed ? (
+              <img className="close" src="/favicon.ico" alt="" />
+            ) : (
+              <img className="open" src="/logo.png" alt="" />
+            )}
+          </div>
           <Menu
             theme="dark"
-            defaultSelectedKeys={["1"]}
+            defaultSelectedKeys={activeRoute}
             mode="inline"
             items={items}
+            onClick={handleMenuClick}
           />
         </Sider>
         <Layout>
-          <Header style={{ padding: 0, background: colorBgContainer }} />
+          <Header
+            className="header-app"
+            style={{ padding: 0, background: colorBgContainer }}
+          >
+            <MenuProfile />
+          </Header>
           <Content style={{ margin: "0 16px" }}>
             <Breadcrumb style={{ margin: "16px 0" }}></Breadcrumb>
             <div
@@ -141,7 +164,7 @@ const ProtectedRoutes: React.FC<{
               }}
             >
               <Routes>
-                <Route path="/" element={<Home />} />
+                <Route path="/dados" element={<Home />} />
                 <Route path="/rollouts" element={<Rollouts />} />
                 <Route path="/users" element={<Users />} />
                 <Route path="*" element={<NotFound />} />

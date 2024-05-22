@@ -203,12 +203,6 @@ const Users = () => {
 
   useEffect(() => {
     if (!showAboutUser || !showRegisterUser) getDataFilters();
-    if (
-      !storage.getData("permissions").menuUsers &&
-      !storage.getData("user").owner
-    ) {
-      navigate("/");
-    }
   }, [showAboutUser, showRegisterUser]);
 
   return (

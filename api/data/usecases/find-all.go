@@ -17,11 +17,11 @@ func NewConciergeFindAllCase(
 	}
 }
 
-func (service ConciergeFindAllCase) FindAll() ([]string, error) {
+func (service ConciergeFindAllCase) FindAll() ([]protocols.FlagPayload, error) {
 
 	flaggers, err := service.redis.FindAll()
 	if err != nil {
-		return nil, err
+		return []protocols.FlagPayload{}, err
 	}
 
 	return flaggers, nil

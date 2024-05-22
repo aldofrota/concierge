@@ -32,3 +32,27 @@
 
   --icon-color: #858c94;
 }
+
+a {
+  text-decoration: none;
+}
+
+.header-app {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.logo-menu {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-menu .close {
+  height: 30px;
+}
+
+.logo-menu .open {
+  height: 60px;
+}

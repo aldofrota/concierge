@@ -1,0 +1,28 @@
+.input-tag {
+  width: 100% !important;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #edf2f7;
+}
+
+.release-ids {
+  display: flex;
+  flex-direction: column;
+
+  .title-release {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+    height: 50px;
+    background-color: var(--concierge-1);
+    border-radius: 10px;
+    color: var(--text-light);
+    padding: 0 15px;
+
+    span {
+      font-weight: 800;
+      font-size: 18px;
+    }
+  }
+}

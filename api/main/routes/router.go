@@ -7,7 +7,6 @@ import (
 
 	"github.com/aldofrota/concierge/main/middlewares"
 	"github.com/gin-gonic/gin"
-	httptrace "gopkg.in/DataDog/dd-trace-go.v1/contrib/gin-gonic/gin"
 )
 
 var router = gin.New()
@@ -31,9 +30,9 @@ func ShutDown(ctx context.Context) error {
 
 func getRoutes() {
 	router.Use(gin.Recovery())
-	router.Use(httptrace.Middleware(os.Getenv("DD_SERVICE")))
+	router.Use(middlewares.NewCorsMiddleware())
+
 	apiPrefix := router.Group("")
-	apiPrefix.Use(middlewares.NewCorsMiddleware())
 	addDocsRoutes(apiPrefix)
 	addHealthCheckRoutes(apiPrefix)
 	addConciergeRoutes(apiPrefix)

@@ -23,6 +23,11 @@
       font-size: 14px;
       margin-left: 10px;
     }
+    .person {
+      background-color: var(--concierge-3);
+      border-radius: 50%;
+      color: var(--text-light);
+    }
   }
 }
 .panel-user {

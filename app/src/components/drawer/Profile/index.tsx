@@ -1,7 +1,6 @@
-import UploadImage from "@/components/Uploads/Image";
 import "./index.scss";
 import { Button, Drawer, Form, Input, Space, message } from "antd";
-import { StorageServiceImpl } from "@/services/storage";
+import { StorageServiceImpl } from "../../../services/storage";
 import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 import axiosInstance from "@/services/axios.intance";
@@ -19,20 +18,19 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
   });
 
   const onFinish = async (data: any) => {
-    setLoading(true);
-    const { confirmPassword, ...password } = data;
-
-    await axiosInstance
-      .post("users/update-password", password)
-      .then((res) => {
-        setLoading(false);
-        messageApi.success(res.data.message);
-        handleClose();
-      })
-      .catch((reason) => {
-        messageApi.error(reason.message);
-        setLoading(false);
-      });
+    // setLoading(true);
+    // const { confirmPassword, ...password } = data;
+    // await axiosInstance
+    //   .post("users/update-password", password)
+    //   .then((res) => {
+    //     setLoading(false);
+    //     messageApi.success(res.data.message);
+    //     handleClose();
+    //   })
+    //   .catch((reason) => {
+    //     messageApi.error(reason.message);
+    //     setLoading(false);
+    //   });
   };
 
   // Função customizada de validação para confirmar se as senhas são iguais
@@ -48,7 +46,6 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
   useEffect(() => {
     if (show) {
       form.resetFields();
-      setImage(user.picture);
     } else {
       setImage(null);
     }
@@ -75,16 +72,11 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
         }
       >
         <div className="main-profile-user">
-          <UploadImage
-            height={"120px"}
-            width={"120px"}
-            update={true}
-            folder="user-profile"
-            img={image}
-          />
           <div className="profile-infos">
-            <span className="profile-name">{user.name}</span>
-            <span className="profile-email">{user.email}</span>
+            <span className="profile-name">{user.name ?? "Concierge"}</span>
+            <span className="profile-email">
+              {user.email ?? "contato@concierge.com"}
+            </span>
           </div>
           <Form
             layout="vertical"

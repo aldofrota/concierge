@@ -9,7 +9,7 @@ type FlagPayload struct {
 }
 
 type Redis interface {
-	FindAll() ([]string, error)
+	FindAll() ([]FlagPayload, error)
 	FindFlagger(flagger string) (FlagPayload, error)
 	FindFlaggersCompany(id string) ([]string, error)
 	CreateFlagger(payload FlagPayload) error

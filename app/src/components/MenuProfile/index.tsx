@@ -1,12 +1,11 @@
-import { IoChevronDownOutline } from "react-icons/io5";
 import "./index.scss";
+import { useState } from "react";
+import { DownOutlined } from "@ant-design/icons";
 import { Dropdown, MenuProps } from "antd";
 import { Link } from "react-router-dom";
-import { StorageServiceImpl } from "../../../../services/storage";
-import { User } from "@/types/user";
-import { useState } from "react";
-import DrawerProfileUser from "@/components/drawer/Profile";
-import UploadImage from "@/components/Uploads/Image";
+import { StorageServiceImpl } from "../../services/storage";
+import { User } from "../../types/user";
+import DrawerProfileUser from "../drawer/Profile";
 
 const MenuProfile = () => {
   const storage = new StorageServiceImpl();
@@ -25,9 +24,8 @@ const MenuProfile = () => {
     {
       label: (
         <div className="panel-user">
-          <span className="company-name">{user.companyName}</span>
-          <span className="name">{user.name}</span>
-          <span className="email">{user.email}</span>
+          <span className="name">{user.name ?? "Concierge"}</span>
+          <span className="email">{user.email ?? "contato@concierge.com"}</span>
         </div>
       ),
       type: "group",
@@ -61,8 +59,8 @@ const MenuProfile = () => {
       <div className="main-menu-profile">
         <Dropdown menu={{ items }} trigger={["click"]}>
           <div className="btn-menu">
-            <IoChevronDownOutline className="icon" />
-            <UploadImage height={"33px"} width={"33px"} img={user.picture} />
+            <span className="material-symbols-rounded icon">stat_minus_1</span>
+            <span className="material-symbols-rounded person">person</span>
           </div>
         </Dropdown>
       </div>

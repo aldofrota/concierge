@@ -3,7 +3,7 @@ import env from "@/config/env.json";
 import { StorageServiceImpl } from "./storage";
 
 const axiosInstance = axios.create({
-  baseURL: env.urlGateway, // Insira sua URL base aqui
+  baseURL: env.conciergeApi, // Insira sua URL base aqui
   headers: {
     "Content-Type": "application/json",
   },
