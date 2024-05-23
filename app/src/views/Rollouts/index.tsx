@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./index.scss";
 import axiosInstance from "@/services/axios.intance";
-import { Popconfirm, Select, Tooltip, message } from "antd";
+import { Popconfirm, Tooltip, message } from "antd";
 import { Container } from "react-bootstrap";
 import { TRollout } from "@/types/rollout";
 import DrawerRegisterFlagger from "@/components/drawer/RegisterFlagger";
@@ -9,13 +9,13 @@ import DrawerRelease from "@/components/drawer/Release";
 
 const Rollouts = () => {
   const [flaggers, setFlaggers] = useState<TRollout[]>([]);
+  const [flaggerRelease, setFlaggerRelease] = useState<string>();
   const [loading, setLoading] = useState<boolean>(false);
   const [showRegister, setShowRegister] = useState(false);
   const [showRelease, setShowRelease] = useState(false);
   const [fullRolloutFlagger, setFullRolloutFlagger] = useState<string>("");
   const [removeFlagger, setRemoveFlagger] = useState<string>("");
   const [messageApi, contextHolder] = message.useMessage();
-  const [ids, setIds] = useState<string[]>([]);
 
   const getFlaggers = async () => {
     setLoading(true);
@@ -108,34 +108,31 @@ const Rollouts = () => {
     setShowRegister(!showRegister);
   };
 
-  const handleDrawerRelease = () => {
-    setShowRelease(!showRelease);
+  const handleDrawerRelease = (flagger: any = null) => {
+    if (flagger) {
+      setFlaggerRelease(flagger);
+      setShowRelease(true);
+    } else {
+      setFlaggerRelease(flagger);
+      setShowRelease(false);
+    }
   };
-
-  // const handleChange = (value: string[]) => {
-  //   setIds([...ids]);
-  //   const newIds: string[] = [];
-  //   console.log(`selected ${value[0]}`);
-  // };
 
   useEffect(() => {
     getFlaggers();
-  }, []);
+  }, [showRegister, showRelease]);
   return (
     <>
       {contextHolder}
-      {/* <Select
-        mode="tags"
-        placeholder="Please select"
-        defaultValue={ids}
-        onChange={handleChange}
-        style={{ width: "100%" }}
-      /> */}
       <DrawerRegisterFlagger
         show={showRegister}
         handleClose={handleDrawerRegister}
       />
-      <DrawerRelease show={showRelease} handleClose={handleDrawerRelease} />
+      <DrawerRelease
+        show={showRelease}
+        handleClose={handleDrawerRelease}
+        flagger={flaggerRelease}
+      />
       <Container fluid="sm">
         <div className="flaggers">
           <div className="title-flaggers">
@@ -160,7 +157,7 @@ const Rollouts = () => {
                       <Tooltip title="Ids no release" placement="bottom">
                         <span
                           className="material-symbols-rounded icon"
-                          onClick={handleDrawerRelease}
+                          onClick={() => handleDrawerRelease(flagger.flagger)}
                         >
                           new_releases
                         </span>

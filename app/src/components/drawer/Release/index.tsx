@@ -4,22 +4,64 @@ import { Button, Drawer, Space, message } from "antd";
 import { TagsInput } from "react-tag-input-component";
 import axiosInstance from "@/services/axios.intance";
 import Search from "antd/es/transfer/search";
+import { TRollout } from "@/types/rollout";
 
-const DrawerRelease = ({ show, handleClose }: any) => {
+const DrawerRelease = ({ show, handleClose, flagger }: any) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
+  const [rollout, setRollout] = useState<TRollout>();
   const [ids, setIds] = useState<string[]>([]);
   const [originalIds, setOriginalIds] = useState<string[]>([]); // Novo estado para armazenar os dados originais
   const [valueSearch, setValueSearch] = useState<string>("");
+  const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
-  const onFinish = async (data: any) => {
+  const onFinish = async () => {
+    setLoading(true);
+    const { toAdd, toRemove } = findDifferences(rollout!.ids, originalIds);
+
+    if (toAdd.length > 0) {
+      await axiosInstance
+        .put(`/release/${rollout!.flagger}`, { ids: toAdd })
+        .then((res) => {
+          setLoading(false);
+          messageApi.success(res.data.message);
+          handleClose();
+        })
+        .catch((reason) => {
+          setLoading(false);
+          messageApi.error(reason.message);
+        });
+    }
+
+    if (toRemove.length > 0) {
+      await axiosInstance
+        .put(`/unrelease/${rollout!.flagger}`, { ids: toRemove })
+        .then((res) => {
+          setLoading(false);
+          messageApi.success(res.data.message);
+          handleClose();
+        })
+        .catch((reason) => {
+          messageApi.error(reason.message);
+          setLoading(false);
+        });
+    }
+
+    setLoading(false);
+  };
+
+  const getRollout = async (flagger: string) => {
     setLoading(true);
     await axiosInstance
-      .post("/create", data)
+      .get(`/${flagger}`)
       .then((res) => {
         setLoading(false);
-        messageApi.success(res.data.message);
-        handleClose();
+        if (res.data.payload.ids === null) res.data.payload.ids = [];
+        setRollout(res.data.payload);
+        if (res.data.payload.ids) {
+          setIds(res.data.payload.ids);
+          setOriginalIds(res.data.payload.ids);
+        }
       })
       .catch((reason) => {
         messageApi.error(reason.message);
@@ -27,9 +69,12 @@ const DrawerRelease = ({ show, handleClose }: any) => {
       });
   };
 
-  const hadleTagRelease = (data: string[]) => {
+  const handleTagRelease = (data: string[]) => {
     if (data.length === 0) {
       setIds([]);
+      if (!isFiltering) {
+        setOriginalIds([]);
+      }
       return;
     }
 
@@ -45,24 +90,56 @@ const DrawerRelease = ({ show, handleClose }: any) => {
         .filter((item) => item !== "" && !ids.includes(item)); // Verifica se o item já existe
 
       if (newItems.length > 0) {
-        setIds((prevSelected) => [...prevSelected, ...newItems]);
-        setOriginalIds((prevSelected) => [...prevSelected, ...newItems]); // Atualiza os dados originais
+        setIds((prevSelected) => [...prevSelected, ...new Set(newItems)]);
+        if (!isFiltering) {
+          // Se não estiver filtrando, atualiza os dados originais
+          setOriginalIds((prevSelected) => [
+            ...prevSelected,
+            ...new Set(newItems),
+          ]);
+        }
       }
     } else {
       setIds([...data]);
+      if (!isFiltering) {
+        // Se não estiver filtrando, atualiza os dados originais
+        setOriginalIds([...data]);
+      }
     }
   };
 
   const onSearch = (value: string) => {
     setValueSearch(value);
-    const filteredIds = originalIds.filter((id) => id.includes(value)); // Filtra os IDs com base no valor da pesquisa
-    setIds(filteredIds);
+    if (value !== "") {
+      setIsFiltering(true); // Ativa o filtro
+      const filteredIds = originalIds.filter((id) => id.includes(value)); // Filtra os IDs com base no valor da pesquisa
+      setIds(filteredIds);
+    } else {
+      setIsFiltering(false); // Desativa o filtro
+      setIds(originalIds); // Define os IDs de volta para os dados originais quando a pesquisa é limpa
+    }
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    const newArray = originalIds.filter((id) => id !== tag);
+    setOriginalIds([...newArray]);
+  };
+
+  const findDifferences = (arr1: string[], arr2: string[]) => {
+    return {
+      toAdd: arr2.filter((item: string) => !arr1.includes(item)),
+      toRemove: arr1.filter((item: string) => !arr2.includes(item)),
+    };
   };
 
   useEffect(() => {
     if (show) {
-      // form.resetFields();
+      getRollout(flagger);
     }
+    return () => {
+      setOriginalIds([]);
+      setIds([]);
+    };
   }, [show]);
 
   return (
@@ -70,17 +147,18 @@ const DrawerRelease = ({ show, handleClose }: any) => {
       {contextHolder}
       <Drawer
         open={show}
-        onClose={handleClose}
+        onClose={() => handleClose()}
         title="Release"
         extra={
           <Space>
-            <Button onClick={handleClose}>Cancelar</Button>
-            <Button type="primary" loading={loading}>
+            <Button onClick={() => handleClose()}>Cancelar</Button>
+            <Button type="primary" loading={loading} onClick={onFinish}>
               Salvar
             </Button>
           </Space>
         }
       >
+        <h3 className="title-flagger">{rollout?.flagger}</h3>
         <Search
           value={valueSearch}
           placeholder="Pesquisar Ids"
@@ -93,10 +171,11 @@ const DrawerRelease = ({ show, handleClose }: any) => {
           </div>
           <TagsInput
             value={ids}
-            onChange={hadleTagRelease}
+            onChange={handleTagRelease}
             name="Ids"
             placeHolder="Digite o id da empresa"
             classNames={{ input: "input-tag" }}
+            onRemoved={handleRemoveTag}
           />
         </div>
       </Drawer>
