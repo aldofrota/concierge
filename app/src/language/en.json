@@ -35,7 +35,11 @@
   },
   "titles": {
     "flaggers": "Flaggers",
-    "companies": "Companies"
+    "companies": "Companies",
+    "legends": "Legends",
+    "chartCompaniesInRollouts": "Number of Companies per Rollout",
+    "flaggersExpirateded": "Expired Rollouts",
+    "notFlaggersExpirateded": "No Expired Rollouts"
   },
   "tooltips": {
     "ids_release": "IDs in the release",

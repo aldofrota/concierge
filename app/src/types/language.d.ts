@@ -52,6 +52,10 @@ export interface PlaceHolders {
 export interface Titles {
   flaggers: string;
   companies: string;
+  legends: string;
+  chartCompaniesInRollouts: string;
+  flaggersExpirateded: string;
+  notFlaggersExpirateded: string;
 }
 
 export interface LabelsForm {
@@ -67,7 +71,6 @@ export interface Rules {
   password: string;
   flagger: string;
   expiration_at: string;
-  full_rollout: string;
   description: string;
 }
 
