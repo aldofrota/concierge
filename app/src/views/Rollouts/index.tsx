@@ -6,6 +6,8 @@ import { Container } from "react-bootstrap";
 import { TRollout } from "@/types/rollout";
 import DrawerRegisterFlagger from "@/components/drawer/RegisterFlagger";
 import DrawerRelease from "@/components/drawer/Release";
+import { TranslationServiceImpl } from "@/services/translate";
+import { Language } from "@/types/language";
 
 const Rollouts = () => {
   const [flaggers, setFlaggers] = useState<TRollout[]>([]);
@@ -17,17 +19,20 @@ const Rollouts = () => {
   const [removeFlagger, setRemoveFlagger] = useState<string>("");
   const [messageApi, contextHolder] = message.useMessage();
 
+  const translation = new TranslationServiceImpl();
+  const [language, setLanguage] = useState<Language>();
+
   const getFlaggers = async () => {
     setLoading(true);
     await axiosInstance
       .get("/all")
       .then(async (res) => {
         setLoading(false);
-        setFlaggers(res.data.flaggers);
+        setFlaggers(res.data.flaggers ?? []);
       })
       .catch((reason) => {
         setLoading(false);
-        messageApi.error("Erro ao buscar os rollouts 🥺");
+        messageApi.error(language?.responsesAPI.err_get_rollouts);
         console.error(reason);
       });
   };
@@ -44,11 +49,11 @@ const Rollouts = () => {
 
   const getTooltip = (rollout: TRollout) => {
     if (rollout.full_rollout) {
-      return "Full rollout";
+      return language?.tooltips.rollouts_2;
     } else if (Number(rollout.ids[0]) > 0) {
-      return "Rollout Parcial";
+      return language?.tooltips.rollouts_1;
     } else {
-      return "Rollout vazio";
+      return language?.tooltips.rollouts_0;
     }
   };
 
@@ -79,8 +84,8 @@ const Rollouts = () => {
         setLoading(false);
         messageApi.success(
           !rollout.full_rollout
-            ? "Colocado em full rollout 😄"
-            : "Tirado do full rollout 😄"
+            ? language?.responsesAPI.add_full_rollout
+            : language?.responsesAPI.remove_full_rollout
         );
         setFullRolloutFlagger("");
         getFlaggers();
@@ -89,8 +94,8 @@ const Rollouts = () => {
         setLoading(false);
         messageApi.error(
           !rollout.full_rollout
-            ? "Erro ao colocar em full rollout 🥺"
-            : "Erro ao remover do full rollout 🥺"
+            ? language?.responsesAPI.err_add_full_rollout
+            : language?.responsesAPI.err_remove_full_rollout
         );
         console.error(reason);
       });
@@ -121,6 +126,11 @@ const Rollouts = () => {
   useEffect(() => {
     getFlaggers();
   }, [showRegister, showRelease]);
+
+  useEffect(() => {
+    setLanguage(translation.getTranslation());
+  }, []);
+
   return (
     <>
       {contextHolder}
@@ -136,13 +146,15 @@ const Rollouts = () => {
       <Container fluid="sm">
         <div className="flaggers">
           <div className="title-flaggers">
-            <span className="label">Flaggers</span>
-            <span
-              className="material-symbols-rounded icon"
-              onClick={handleDrawerRegister}
-            >
-              control_point_duplicate
-            </span>
+            <span className="label">{language?.titles.flaggers}</span>
+            <Tooltip title={language?.tooltips.add} placement="bottom">
+              <span
+                className="material-symbols-rounded icon"
+                onClick={handleDrawerRegister}
+              >
+                control_point_duplicate
+              </span>
+            </Tooltip>
           </div>
           <div className="flaggers-list">
             {flaggers.map((flagger) => {
@@ -154,7 +166,10 @@ const Rollouts = () => {
                   </span>
                   <div className="actions">
                     {!flagger.full_rollout && (
-                      <Tooltip title="Ids no release" placement="bottom">
+                      <Tooltip
+                        title={language?.tooltips.ids_release}
+                        placement="bottom"
+                      >
                         <span
                           className="material-symbols-rounded icon"
                           onClick={() => handleDrawerRelease(flagger.flagger)}
@@ -164,18 +179,18 @@ const Rollouts = () => {
                       </Tooltip>
                     )}
                     <Popconfirm
-                      title="Full Rollout"
+                      title={language?.popsconfirm.full_rollout.title}
                       description={
                         flagger.full_rollout
-                          ? "Você deseja remover do full rollout?"
-                          : "Você deseja colocar em full rollout?"
+                          ? language?.popsconfirm.full_rollout.description_2
+                          : language?.popsconfirm.full_rollout.description
                       }
                       open={fullRollout(flagger.flagger)}
                       onCancel={() => setFullRolloutFlagger("")}
                       onConfirm={() => handleFullRollout(flagger)}
                       okButtonProps={{ loading }}
-                      okText="Sim"
-                      cancelText="Não"
+                      okText={language?.actions_buttons.yes}
+                      cancelText={language?.actions_buttons.no}
                     >
                       <Tooltip title={getTooltip(flagger)} placement="bottom">
                         <span
@@ -187,16 +202,19 @@ const Rollouts = () => {
                       </Tooltip>
                     </Popconfirm>
                     <Popconfirm
-                      title="Remover flagger"
-                      description={`Deseja remover a flagger ${flagger.flagger}`}
+                      title={language?.popsconfirm.remove_flagger.title}
+                      description={`${language?.popsconfirm.remove_flagger.description} ${flagger.flagger}`}
                       open={remove(flagger.flagger)}
                       onCancel={() => setRemoveFlagger("")}
                       onConfirm={handleRemoveFlagger}
                       okButtonProps={{ loading }}
-                      okText="Sim"
-                      cancelText="Não"
+                      okText={language?.actions_buttons.yes}
+                      cancelText={language?.actions_buttons.no}
                     >
-                      <Tooltip title="Remover flagger" placement="bottom">
+                      <Tooltip
+                        title={language?.tooltips.remove}
+                        placement="bottom"
+                      >
                         <span
                           className="material-symbols-rounded icon"
                           onClick={() => setRemoveFlagger(flagger.flagger)}

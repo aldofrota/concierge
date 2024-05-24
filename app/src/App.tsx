@@ -17,13 +17,17 @@ import { Breadcrumb, ConfigProvider, Layout, Menu, theme } from "antd";
 import locale from "antd/locale/pt_BR";
 
 // Rotas
-import Home from "./views/Home";
-import NotFound from "./views/Notfound";
-import Users from "./views/Users";
-import Rollouts from "./views/Rollouts";
-import { StorageServiceImpl } from "./services/storage";
-import Login from "./views/Login";
-import MenuProfile from "./components/MenuProfile";
+import Home from "@/views/Home";
+import NotFound from "@/views/Notfound";
+import Users from "@/views/Users";
+import Rollouts from "@/views/Rollouts";
+import Login from "@/views/Login";
+
+import { StorageServiceImpl } from "@/services/storage";
+import MenuProfile from "@/components/MenuProfile";
+import LanguageComponent from "@/components/Language";
+import { TranslationServiceImpl } from "./services/translate";
+import { Language } from "./types/language";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -42,12 +46,6 @@ function getItem(
     label,
   } as MenuItem;
 }
-
-const items: MenuItem[] = [
-  getItem("Dados", "/dados", <PieChartOutlined />),
-  getItem("Rollouts", "/rollouts", <DeploymentUnitOutlined />),
-  getItem("Usuários", "/users", <UserOutlined />),
-];
 
 const App: React.FC = () => {
   const storage = new StorageServiceImpl();
@@ -101,9 +99,17 @@ const ProtectedRoutes: React.FC<{
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const [activeRoute, setActiveRoute] = useState(["/dados"]);
+  const translation = new TranslationServiceImpl();
+  const [language, setLanguage] = useState<Language>();
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const items: MenuItem[] = [
+    getItem(language?.menu.data, "/dados", <PieChartOutlined />),
+    getItem(language?.menu.rollouts, "/rollouts", <DeploymentUnitOutlined />),
+    getItem(language?.menu.users, "/users", <UserOutlined />),
+  ];
 
   const handleMenuClick: MenuProps["onClick"] = (e) => {
     setActiveRoute([e.key]);
@@ -115,6 +121,10 @@ const ProtectedRoutes: React.FC<{
       navigate(activeRoute[0]);
     }
   }, [location]);
+
+  useEffect(() => {
+    setLanguage(translation.getTranslation());
+  }, []);
 
   return (
     <ConfigProvider
@@ -151,6 +161,7 @@ const ProtectedRoutes: React.FC<{
             className="header-app"
             style={{ padding: 0, background: colorBgContainer }}
           >
+            <LanguageComponent />
             <MenuProfile />
           </Header>
           <Content style={{ margin: "0 16px" }}>
@@ -172,7 +183,7 @@ const ProtectedRoutes: React.FC<{
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            Concierge ©{new Date().getFullYear()} Created by Aldo Frota
+            Concierge ©{new Date().getFullYear()} {language?.copy}
           </Footer>
         </Layout>
       </Layout>

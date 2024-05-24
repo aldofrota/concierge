@@ -1,0 +1,63 @@
+{
+  "copy": "Created by Aldo Frota",
+  "menu": {
+    "data": "Data",
+    "rollouts": "Rollouts",
+    "users": "Users",
+    "profile": "Profile"
+  },
+  "actions_buttons": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "yes": "Yes",
+    "no": "No",
+    "logout": "Logout"
+  },
+  "drawers": {
+    "register_flagger": "Register flagger",
+    "profile": "Profile",
+    "release": "Release",
+    "register_user": "Register user"
+  },
+  "labels_form": {
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "flagger": "Flagger name",
+    "expiration_at": "Expiration date",
+    "full_rollout": "Full rollout",
+    "description": "Description"
+  },
+  "rules": {
+    "password": "Enter the Password!",
+    "flagger": "Enter the flagger",
+    "expiration_at": "Enter the expiration date",
+    "description": "Enter the description"
+  },
+  "titles": {
+    "flaggers": "Flaggers",
+    "companies": "Companies"
+  },
+  "tooltips": {
+    "ids_release": "IDs in release",
+    "rollouts_0": "Empty rollout",
+    "rollouts_1": "Partial rollout",
+    "rollouts_2": "Full rollout",
+    "remove": "Remove",
+    "add": "Add"
+  },
+  "placeHolders": {
+    "search": "Search...",
+    "type_it": "Type..."
+  },
+  "popsconfirm": {
+    "full_rollout": {
+      "title": "Full rollout",
+      "description": "Do you want to set to full rollout?",
+      "description_2": "Do you want to remove from full rollout?"
+    },
+    "remove_flagger": {
+      "title": "Remove flagger",
+      "description": "Do you want to remove the flagger "
+    }
+  }
+}

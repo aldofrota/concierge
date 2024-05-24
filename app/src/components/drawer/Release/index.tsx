@@ -5,6 +5,8 @@ import { TagsInput } from "react-tag-input-component";
 import axiosInstance from "@/services/axios.intance";
 import Search from "antd/es/transfer/search";
 import { TRollout } from "@/types/rollout";
+import { TranslationServiceImpl } from "@/services/translate";
+import { Language } from "@/types/language";
 
 const DrawerRelease = ({ show, handleClose, flagger }: any) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -14,6 +16,9 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
   const [originalIds, setOriginalIds] = useState<string[]>([]); // Novo estado para armazenar os dados originais
   const [valueSearch, setValueSearch] = useState<string>("");
   const [isFiltering, setIsFiltering] = useState<boolean>(false);
+
+  const translation = new TranslationServiceImpl();
+  const [language, setLanguage] = useState<Language>();
 
   const onFinish = async () => {
     setLoading(true);
@@ -135,6 +140,7 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
   useEffect(() => {
     if (show) {
       getRollout(flagger);
+      setLanguage(translation.getTranslation());
     }
     return () => {
       setOriginalIds([]);
@@ -148,12 +154,14 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
       <Drawer
         open={show}
         onClose={() => handleClose()}
-        title="Release"
+        title={language?.drawers.release}
         extra={
           <Space>
-            <Button onClick={() => handleClose()}>Cancelar</Button>
+            <Button onClick={() => handleClose()}>
+              {language?.actions_buttons.cancel}
+            </Button>
             <Button type="primary" loading={loading} onClick={onFinish}>
-              Salvar
+              {language?.actions_buttons.save}
             </Button>
           </Space>
         }
@@ -161,19 +169,19 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
         <h3 className="title-flagger">{rollout?.flagger}</h3>
         <Search
           value={valueSearch}
-          placeholder="Pesquisar Ids"
+          placeholder={language?.placeHolders.search}
           onChange={(e: any) => onSearch(e.target.value)}
         />
         <div className="release-ids">
           <div className="title-release">
-            <span>Empresas</span>
+            <span>{language?.titles.companies}</span>
             <span>{ids.length}</span>
           </div>
           <TagsInput
             value={ids}
             onChange={handleTagRelease}
             name="Ids"
-            placeHolder="Digite o id da empresa"
+            placeHolder={language?.placeHolders.type_it}
             classNames={{ input: "input-tag" }}
             onRemoved={handleRemoveTag}
           />

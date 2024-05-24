@@ -31,9 +31,10 @@ axiosInstance.interceptors.response.use(
     // Tratar erros de forma diferenciada aqui
     if (error.response) {
       // O servidor retornou um código de status diferente de 2xx
+      console.log(error.response.data.error.error);
       const errorMessage =
-        error.response.data && error.response.data.message
-          ? error.response.data.message
+        error.response.data && error.response.data.error.error
+          ? error.response.data.error.error
           : "Erro na resposta do servidor";
 
       return Promise.reject({

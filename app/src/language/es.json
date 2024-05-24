@@ -1,0 +1,63 @@
+{
+  "copy": "Creado por Aldo Frota",
+  "menu": {
+    "data": "Datos",
+    "rollouts": "Rollouts",
+    "users": "Usuarios",
+    "profile": "Perfil"
+  },
+  "actions_buttons": {
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "yes": "Sí",
+    "no": "No",
+    "logout": "Cerrar sesión"
+  },
+  "drawers": {
+    "register_flagger": "Registrar flagger",
+    "profile": "Perfil",
+    "release": "Release",
+    "register_user": "Registrar usuario"
+  },
+  "labels_form": {
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "flagger": "Nombre del flagger",
+    "expiration_at": "Fecha de Expiración",
+    "full_rollout": "Full rollout",
+    "description": "Descripción"
+  },
+  "rules": {
+    "password": "¡Ingrese la Contraseña!",
+    "flagger": "Ingrese el flagger",
+    "expiration_at": "Ingrese la fecha de expiración",
+    "description": "Ingrese la descripción"
+  },
+  "titles": {
+    "flaggers": "Flaggers",
+    "companies": "Empresas"
+  },
+  "tooltips": {
+    "ids_release": "IDs en release",
+    "rollouts_0": "Rollout vacío",
+    "rollouts_1": "Rollout Parcial",
+    "rollouts_2": "Full rollout",
+    "remove": "Remover",
+    "add": "Añadir"
+  },
+  "placeHolders": {
+    "search": "Buscar...",
+    "type_it": "Escribir..."
+  },
+  "popsconfirm": {
+    "full_rollout": {
+      "title": "Full rollout",
+      "description": "¿Desea establecer en full rollout?",
+      "description_2": "¿Desea quitar del full rollout?"
+    },
+    "remove_flagger": {
+      "title": "Remover flagger",
+      "description": "¿Desea remover el flagger "
+    }
+  }
+}

@@ -4,6 +4,8 @@ import { StorageServiceImpl } from "../../../services/storage";
 import { useEffect, useState } from "react";
 import { User } from "@/types/user";
 import axiosInstance from "@/services/axios.intance";
+import { TranslationServiceImpl } from "@/services/translate";
+import { Language } from "@/types/language";
 
 const DrawerProfileUser = ({ show, handleClose }: any) => {
   const storage = new StorageServiceImpl();
@@ -11,6 +13,9 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<any>(null);
+
+  const translation = new TranslationServiceImpl();
+  const [language, setLanguage] = useState<Language>();
 
   // Inicializa o estado com os dados do usuário
   const [user] = useState<User>(() => {
@@ -46,6 +51,7 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
   useEffect(() => {
     if (show) {
       form.resetFields();
+      setLanguage(translation.getTranslation());
     } else {
       setImage(null);
     }
@@ -55,18 +61,20 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
     <>
       {contextHolder}
       <Drawer
-        title="Perfil"
+        title={language?.drawers.profile}
         onClose={handleClose}
         open={show}
         extra={
           <Space>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleClose}>
+              {language?.actions_buttons.cancel}
+            </Button>
             <Button
               type="primary"
               onClick={() => form.submit()}
               loading={loading}
             >
-              Salvar
+              {language?.actions_buttons.save}
             </Button>
           </Space>
         }
@@ -85,25 +93,25 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
             onFinish={onFinish}
           >
             <Form.Item
-              label="Senha"
+              label={language?.labels_form.password}
               name="password"
               rules={[
                 {
                   required: true,
-                  message: "Informe o Senha!",
+                  message: language?.rules.password,
                 },
               ]}
             >
               <Input.Password />
             </Form.Item>
             <Form.Item
-              label="Confirmar senha"
+              label={language?.labels_form.confirmPassword}
               name="confirmPassword"
               dependencies={["password"]}
               rules={[
                 {
                   required: true,
-                  message: "Informe a Senha!",
+                  message: language?.rules.password,
                 },
                 ({ getFieldValue }) =>
                   validatePasswordConfirmation({ getFieldValue }),

@@ -1,15 +1,19 @@
 import "./index.scss";
-import { useState } from "react";
-import { DownOutlined } from "@ant-design/icons";
+import { useEffect, useState } from "react";
 import { Dropdown, MenuProps } from "antd";
 import { Link } from "react-router-dom";
 import { StorageServiceImpl } from "../../services/storage";
 import { User } from "../../types/user";
 import DrawerProfileUser from "../drawer/Profile";
+import { TranslationServiceImpl } from "@/services/translate";
+import { Language } from "@/types/language";
 
 const MenuProfile = () => {
   const storage = new StorageServiceImpl();
   const [showProfile, setShowProfile] = useState(false);
+
+  const translation = new TranslationServiceImpl();
+  const [language, setLanguage] = useState<Language>();
 
   // Inicializa o estado com os dados do usuário
   const [user] = useState<User>(() => {
@@ -34,7 +38,7 @@ const MenuProfile = () => {
       label: (
         <div className="item-menu-profile" onClick={handleDrawerProfile}>
           <span className="material-symbols-rounded icon">account_box</span>
-          Perfil
+          {language?.menu.profile}
         </div>
       ),
       key: "2",
@@ -46,12 +50,16 @@ const MenuProfile = () => {
       label: (
         <Link className="item-menu-profile" to="/login">
           <span className="material-symbols-rounded icon">logout</span>
-          Sair
+          {language?.actions_buttons.logout}
         </Link>
       ),
       key: "3",
     },
   ];
+
+  useEffect(() => {
+    setLanguage(translation.getTranslation());
+  }, []);
 
   return (
     <>

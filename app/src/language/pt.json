@@ -1,0 +1,71 @@
+{
+  "copy": "Criado por Aldo Frota",
+  "menu": {
+    "data": "Dados",
+    "rollouts": "Rollouts",
+    "users": "Usuários",
+    "profile": "Perfil"
+  },
+  "actions_buttons": {
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "yes": "Sim",
+    "no": "Não",
+    "logout": "Sair"
+  },
+  "drawers": {
+    "register_flagger": "Registrar flagger",
+    "profile": "Perfil",
+    "release": "Release",
+    "register_user": "Registrar usuário"
+  },
+  "labels_form": {
+    "password": "Senha",
+    "confirmPassword": "Confirmar Senha",
+    "flagger": "Nome da flagger",
+    "expiration_at": "Data de Expiração",
+    "full_rollout": "Full rollout",
+    "description": "Descrição"
+  },
+  "rules": {
+    "password": "Insira a Senha!",
+    "flagger": "Insira a flagger",
+    "expiration_at": "Insira a data de expiração",
+    "description": "Insira a descrição"
+  },
+  "titles": {
+    "flaggers": "Flaggers",
+    "companies": "Empresas"
+  },
+  "tooltips": {
+    "ids_release": "Ids no release",
+    "rollouts_0": "Rollout vazio",
+    "rollouts_1": "Rollout Parcial",
+    "rollouts_2": "Rollout Full",
+    "remove": "Remover",
+    "add": "Adicionar"
+  },
+  "placeHolders": {
+    "search": "Pesquisar...",
+    "type_it": "Digite..."
+  },
+  "popsconfirm": {
+    "full_rollout": {
+      "title": "Full rollout",
+      "description": "Você deseja colocar em full rollout?",
+      "description_2": "Você deseja remover do full rollout?"
+    },
+    "remove_flagger": {
+      "title": "Remover flagger",
+      "description": "Deseja remover a flagger "
+    }
+  },
+  "responsesAPI": {
+    "err_get_rollouts": "Erro ao buscar os rollouts 🤔",
+    "succes_create_rollout": "Flagger registrada 🥰",
+    "add_full_rollout": "Colocado em full rollout 🫡",
+    "remove_full_rollout": "Tirado do full rollout 🫡",
+    "err_add_full_rollout": "Erro ao colocar em full rollout 🤔",
+    "err_remove_full_rollout": "Erro ao remover do full rollout 🤔"
+  }
+}
