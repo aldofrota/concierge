@@ -1,7 +1,7 @@
 {
   "copy": "Creado por Aldo Frota",
   "menu": {
-    "data": "Datos",
+    "data": "Panel",
     "rollouts": "Rollouts",
     "users": "Usuarios",
     "profile": "Perfil"
@@ -11,12 +11,12 @@
     "save": "Guardar",
     "yes": "Sí",
     "no": "No",
-    "logout": "Cerrar sesión"
+    "logout": "Salir"
   },
   "drawers": {
     "register_flagger": "Registrar flagger",
     "profile": "Perfil",
-    "release": "Release",
+    "release": "Lanzamiento",
     "register_user": "Registrar usuario"
   },
   "labels_form": {
@@ -38,26 +38,34 @@
     "companies": "Empresas"
   },
   "tooltips": {
-    "ids_release": "IDs en release",
+    "ids_release": "IDs en el lanzamiento",
     "rollouts_0": "Rollout vacío",
     "rollouts_1": "Rollout Parcial",
     "rollouts_2": "Full rollout",
-    "remove": "Remover",
-    "add": "Añadir"
+    "remove": "Eliminar",
+    "add": "Agregar"
   },
   "placeHolders": {
     "search": "Buscar...",
-    "type_it": "Escribir..."
+    "type_it": "Escribe..."
   },
   "popsconfirm": {
     "full_rollout": {
       "title": "Full rollout",
-      "description": "¿Desea establecer en full rollout?",
-      "description_2": "¿Desea quitar del full rollout?"
+      "description": "¿Desea realizar un full rollout?",
+      "description_2": "¿Desea remover del full rollout?"
     },
     "remove_flagger": {
-      "title": "Remover flagger",
-      "description": "¿Desea remover el flagger "
+      "title": "Eliminar flagger",
+      "description": "¿Desea eliminar el flagger "
     }
+  },
+  "responsesAPI": {
+    "err_get_rollouts": "Error al obtener los rollouts 🤔",
+    "succes_create_rollout": "Flagger registrado 🥰",
+    "add_full_rollout": "Puesto en full rollout 🫡",
+    "remove_full_rollout": "Removido del full rollout 🫡",
+    "err_add_full_rollout": "Error al poner en full rollout 🤔",
+    "err_remove_full_rollout": "Error al remover del full rollout 🤔"
   }
 }

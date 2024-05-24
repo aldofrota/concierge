@@ -1,7 +1,7 @@
 {
   "copy": "Created by Aldo Frota",
   "menu": {
-    "data": "Data",
+    "data": "Dashboard",
     "rollouts": "Rollouts",
     "users": "Users",
     "profile": "Profile"
@@ -22,8 +22,8 @@
   "labels_form": {
     "password": "Password",
     "confirmPassword": "Confirm Password",
-    "flagger": "Flagger name",
-    "expiration_at": "Expiration date",
+    "flagger": "Flagger Name",
+    "expiration_at": "Expiration Date",
     "full_rollout": "Full rollout",
     "description": "Description"
   },
@@ -38,7 +38,7 @@
     "companies": "Companies"
   },
   "tooltips": {
-    "ids_release": "IDs in release",
+    "ids_release": "IDs in the release",
     "rollouts_0": "Empty rollout",
     "rollouts_1": "Partial rollout",
     "rollouts_2": "Full rollout",
@@ -57,7 +57,15 @@
     },
     "remove_flagger": {
       "title": "Remove flagger",
-      "description": "Do you want to remove the flagger "
+      "description": "Do you want to remove the flagger"
     }
+  },
+  "responsesAPI": {
+    "err_get_rollouts": "Error fetching the rollouts 🤔",
+    "succes_create_rollout": "Flagger registered 🥰",
+    "add_full_rollout": "Set to full rollout 🫡",
+    "remove_full_rollout": "Removed from full rollout 🫡",
+    "err_add_full_rollout": "Error setting to full rollout 🤔",
+    "err_remove_full_rollout": "Error removing from full rollout 🤔"
   }
 }
