@@ -1,16 +1,18 @@
+import "./index.scss";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Spin, message } from "antd";
 
-import "./index.scss";
-import { useEffect, useState } from "react";
-import { StorageServiceImpl } from "../../../services/storage";
+import env from "@/config/env.json";
+import axios from "axios";
+import { StorageServiceImpl } from "@/services/storage";
 
 const initialValue = {
   email: "",
   password: "",
 };
 
-const FormLogin = ({ setFormActive }: any) => {
+const FormLogin = ({}) => {
   // Estados
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
@@ -23,34 +25,32 @@ const FormLogin = ({ setFormActive }: any) => {
   const storage = new StorageServiceImpl();
 
   const onFinish = async (data: { email: string; password: string }) => {
-    // setLoading(true);
-    // await auth
-    //   .validateUser(data)
-    //   .then((res) => {
-    //     const { token, permissions, ...user } = res;
-    //     const setedUser = storage.setData("user", user);
-    //     const setedPermissions = storage.setData("permissions", permissions);
-    //     const setedToken = storage.setData("token", token);
-    //     if (setedUser && setedToken && setedPermissions) {
-    //       messageApi.success("Bom trabalho 😄");
-    //       navigate("/");
-    //     } else {
-    //       messageApi.error("Erro ao efetuar Login 🥺");
-    //     }
-    //     setLoading(false);
-    //   })
-    //   .catch((reason) => {
-    //     setLoading(false);
-    //     if (typeof reason.message === "string") {
-    //       messageApi.error(reason.response.data.message);
-    //     } else if (Array.isArray(reason.message)) {
-    //       reason.message.map((err: string) => messageApi.error(err));
-    //     }
-    //   });
+    setLoading(true);
+    await axios
+      .post(env.conciergeAuth, data)
+      .then((res) => {
+        const { token, permissions, language, ...user } = res.data;
+        const setedUser = storage.setData("user", user);
+        const setedPermissions = storage.setData("permissions", permissions);
+        const setedToken = storage.setData("token", token);
+        const setedLanguage = storage.setData("language", language);
+        if (setedUser && setedToken && setedPermissions && setedLanguage) {
+          messageApi.success("Bom trabalho 😄");
+          navigate("/");
+        } else {
+          messageApi.error("Erro ao efetuar Login 🥺");
+        }
+        setLoading(false);
+      })
+      .catch((reason) => {
+        setLoading(false);
+        console.log(reason);
+        messageApi.error("reason.response.error");
+      });
   };
 
   useEffect(() => {
-    storage.deleteData("token");
+    // storage.deleteData("token");
   }, []);
 
   return (
@@ -108,14 +108,6 @@ const FormLogin = ({ setFormActive }: any) => {
             </div>
           )}
         </Form.Item>
-
-        <button
-          className="btn-recovery"
-          onClick={() => setFormActive("Recovery")}
-          type="button"
-        >
-          Esqueci minha senha 🫣
-        </button>
       </Form>
     </>
   );

@@ -3,11 +3,11 @@ package factories
 import (
 	"github.com/aldofrota/concierge/data/usecases"
 	usecase "github.com/aldofrota/concierge/domain/usecases"
-	redisHelper "github.com/aldofrota/concierge/infra/db/redis/helpers"
+	"github.com/aldofrota/concierge/infra/db/redis"
 )
 
 func NewConciergeGrpcFactory() usecase.Concierge {
-	redisService := redisHelper.NewRedisService(db_redis_con)
+	redisService := redis.NewRedisService(db_redis_con)
 	ConciergeCase := usecases.NewConciergeCase(
 		redisService,
 	)

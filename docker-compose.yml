@@ -44,6 +44,7 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       MONGO_URI: mongodb://mongodb/concierge
+      JWT_SECRET: w0pKf8zNjTg2VzUQX4YjKPttZ3bVXznX2iwZvVToRoE=
 
   app:
     build:

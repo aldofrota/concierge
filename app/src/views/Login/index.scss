@@ -21,7 +21,11 @@
     position: relative;
     padding: 20px;
     background: rgb(170, 0, 255);
-    background: linear-gradient(111deg, #205896 0%, #72a1e5 100%);
+    background: linear-gradient(
+      111deg,
+      var(--concierge-1) 0%,
+      var(--concierge-3) 100%
+    );
     background-size: 400% 400%;
     animation: background 10s ease infinite;
 
@@ -55,29 +59,68 @@
     .effects {
       height: 550px;
       width: 550px;
-      border-radius: 50%;
-      border: 1px solid #ffa500;
-      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      rotate: -30deg;
+
       opacity: 0.1;
-      transform: translate(50%, 40%);
+      transform: translateX(50%);
 
       .ef-1 {
-        height: 30px;
-        width: 30px;
-        background-color: #205896;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 550px;
+        width: 550px;
         border-radius: 50%;
-        position: absolute;
-        top: -15px;
+        border: 1px solid var(--concierge-1);
+        position: relative; /* Adiciona para posicionamento absoluto do planeta */
+        animation: orbit 25s linear infinite;
       }
-      .ef-2 {
-        height: 400px;
-        width: 400px;
+
+      .ef-1::before {
+        content: "";
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        width: 55px; /* Tamanho do planeta */
+        height: 55px;
+        background-color: var(--concierge-1); /* Cor do planeta */
         border-radius: 50%;
-        border: 70px solid #205896;
+      }
+
+      .ef-2 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 350px;
+        width: 350px;
+        position: relative;
+        border: 1px solid var(--concierge-1);
+        animation: orbit 25s linear infinite;
+        border-radius: 50%;
+      }
+
+      .ef-2::before {
+        content: "";
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        width: 55px; /* Tamanho do planeta */
+        height: 55px;
+        background-color: var(--concierge-1); /* Cor do planeta */
+        border-radius: 50%;
+        animation: orbit 15s linear infinite;
+      }
+
+      .ef-3 {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 200px;
+        width: 200px;
+        background-color: var(--concierge-1);
+        border-radius: 50%;
       }
     }
   }
@@ -100,6 +143,15 @@
   }
   100% {
     background-position: 0% 50%;
+  }
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 

@@ -17,8 +17,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: Validate if mongo database, redis database, kafka producer and
-        kafka consumer is connected
+      description: Validate if mongo database, redis database is connected
       produces:
       - application/json
       responses:

@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/health": {
             "get": {
-                "description": "Validate if mongo database, redis database, kafka producer and kafka consumer is connected",
+                "description": "Validate if mongo database, redis database is connected",
                 "consumes": [
                     "application/json"
                 ],

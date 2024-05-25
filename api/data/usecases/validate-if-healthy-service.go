@@ -11,20 +11,23 @@ import (
 // ValidateIfHealthy is a use case that validates if the service is healthy
 type ValidateIfHealthyService struct {
 	redisDatabaseIsConnected protocols.DatabaseIsConnected
+	mongoDatabaseIsConnected protocols.DatabaseIsConnected
 }
 
 func NewValidateIfHealthyService(
 	redisDatabaseIsConnected protocols.DatabaseIsConnected,
+	mongoDatabaseIsConnected protocols.DatabaseIsConnected,
 ) usecases.ValidateIfHealthy {
 	return ValidateIfHealthyService{
 		redisDatabaseIsConnected,
+		mongoDatabaseIsConnected,
 	}
 }
 
 func (service ValidateIfHealthyService) Validate() (bool, error) {
 	var wg sync.WaitGroup
 	count := 0
-	wg.Add(1)
+	wg.Add(2)
 
 	resultChannel := make(chan bool)
 	errChannel := make(chan error, 1)
@@ -40,6 +43,7 @@ func (service ValidateIfHealthyService) Validate() (bool, error) {
 	}
 
 	go checkConnection(service.redisDatabaseIsConnected.IsConnected)
+	go checkConnection(service.mongoDatabaseIsConnected.IsConnected)
 
 	go func() {
 		wg.Wait()
@@ -54,7 +58,7 @@ func (service ValidateIfHealthyService) Validate() (bool, error) {
 		}
 	}
 
-	if count != 1 {
+	if count != 2 {
 		return false, errors.New("failed to check all services")
 	}
 

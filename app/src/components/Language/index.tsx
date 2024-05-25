@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
 import "./index.scss";
 import { StorageServiceImpl } from "@/services/storage";
-import { User } from "@/types/user";
 
 const CustomDropdown = () => {
   const storage = new StorageServiceImpl();
   const [isOpen, setIsOpen] = useState(false);
   const [language, setLanguage] = useState("portuguese");
-
-  // Inicializa o estado com os dados do usuário
-  const [user] = useState<User>(() => {
-    return storage.getData("user");
-  });
 
   const allLanguagesOptions = [
     { value: "portuguese", icon: "pt", label: "Português" },
@@ -34,27 +28,13 @@ const CustomDropdown = () => {
 
   const defineLanguage = (language: string) => {
     setLanguage(language);
-    let user: User = {
-      id: "",
-      name: "Concierge",
-      email: "contato@concierge.com",
-      status: "A",
-      language: language,
-      permission: {
-        viewRollout: true,
-        createRollout: true,
-        createUser: true,
-        removeRollout: true,
-        updateRelease: true,
-      },
-    };
-    storage.setData("user", user);
+    storage.setData("language", language);
     setIsOpen(false);
     window.location.reload();
   };
 
   useEffect(() => {
-    setLanguage(user.language);
+    setLanguage(storage.getData("language"));
   }, []);
 
   return (

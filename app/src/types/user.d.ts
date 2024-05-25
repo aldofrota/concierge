@@ -2,8 +2,8 @@ export type UserPermissions = {
   createRollout: boolean;
   updateRelease: boolean;
   removeRollout: boolean;
-  viewRollout: boolean;
   createUser: boolean;
+  admin: boolean;
 };
 
 export type User = {

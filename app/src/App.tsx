@@ -50,19 +50,20 @@ function getItem(
 const App: React.FC = () => {
   const storage = new StorageServiceImpl();
   const [collapsed, setCollapsed] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!storage.getData("token")
+  );
 
-  const isAuthenticated = () => {
-    // const token = storage.getData("token");
-    const token = true;
-
-    return !!token;
-  };
+  useEffect(() => {
+    const token = storage.getData("token");
+    setIsAuthenticated(!!token);
+  }, [storage]);
 
   return (
     <ConfigProvider
       theme={{
         token: {
-          colorPrimary: "#205896",
+          colorPrimary: "var(--concierge-3)",
         },
       }}
     >
@@ -75,7 +76,7 @@ const App: React.FC = () => {
           <Route
             path="/*"
             element={
-              isAuthenticated() ? (
+              isAuthenticated ? (
                 <ProtectedRoutes
                   collapsed={collapsed}
                   setCollapsed={setCollapsed}

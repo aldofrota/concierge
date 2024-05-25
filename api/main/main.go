@@ -24,7 +24,12 @@ import (
 
 func main() {
 	go func() {
-		err := factories.NewDatabaseRedisOpenConnection()
+		err := factories.NewDatabaseMongoOpenConnection()
+		if err != nil {
+			panic("Falha ao conectar ao banco de dados Mongo")
+		}
+
+		err = factories.NewDatabaseRedisOpenConnection()
 		if err != nil {
 			panic("Falha ao conectar ao banco de dados Redis")
 		}
@@ -51,6 +56,9 @@ func main() {
 
 	fmt.Println("Stopping server...")
 
+	if err := factories.NewCloseDatabaseMongoConnection(); err != nil {
+		panic(err)
+	}
 	if err := factories.NewCloseDatabaseRedisConnection(); err != nil {
 		panic(err)
 	}

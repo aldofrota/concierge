@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/aldofrota/concierge/main/adapters"
+	"github.com/aldofrota/concierge/main/factories"
 	"github.com/aldofrota/concierge/main/middlewares"
 	"github.com/gin-gonic/gin"
 )
@@ -36,4 +38,6 @@ func getRoutes() {
 	addDocsRoutes(apiPrefix)
 	addHealthCheckRoutes(apiPrefix)
 	addConciergeRoutes(apiPrefix)
+	addConciergeUsersRoutes(apiPrefix)
+	apiPrefix.POST("/auth", adapters.AdaptController(factories.NewConciergeAuthUserControllerFactory()))
 }

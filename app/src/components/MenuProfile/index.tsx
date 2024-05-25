@@ -1,7 +1,7 @@
 import "./index.scss";
 import { useEffect, useState } from "react";
 import { Dropdown, MenuProps } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { StorageServiceImpl } from "../../services/storage";
 import { User } from "../../types/user";
 import DrawerProfileUser from "../drawer/Profile";
@@ -10,6 +10,7 @@ import { Language } from "@/types/language";
 
 const MenuProfile = () => {
   const storage = new StorageServiceImpl();
+  const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
 
   const translation = new TranslationServiceImpl();
@@ -22,6 +23,11 @@ const MenuProfile = () => {
 
   const handleDrawerProfile = () => {
     setShowProfile(!showProfile);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   const items: MenuProps["items"] = [
@@ -48,10 +54,10 @@ const MenuProfile = () => {
     },
     {
       label: (
-        <Link className="item-menu-profile" to="/login">
+        <div className="item-menu-profile" onClick={handleLogout}>
           <span className="material-symbols-rounded icon">logout</span>
           {language?.actions_buttons.logout}
-        </Link>
+        </div>
       ),
       key: "3",
     },
