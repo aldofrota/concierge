@@ -1,5 +1,4 @@
 import { Language } from "@/types/language";
-import { User } from "@/types/user";
 import { StorageServiceImpl } from "./storage";
 
 import pt from "../language/pt.json";
@@ -11,15 +10,15 @@ interface TranslationService {
 }
 
 export class TranslationServiceImpl implements TranslationService {
-  private user: User;
+  private language: string;
 
   constructor() {
     const storage = new StorageServiceImpl();
-    this.user = storage.getData("user");
+    this.language = storage.getData("language");
   }
 
   getTranslation(): Language {
-    switch (this.user.language) {
+    switch (this.language) {
       case "portuguese":
         return pt;
       case "english":

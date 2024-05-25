@@ -23,16 +23,12 @@ func (controller *ConciergeFindController) Handle(ctx *gin.Context) protocols.Ht
 	if err != nil {
 		return protocols.HttpResponse{
 			StatusCode: http.StatusInternalServerError,
-			Body: map[string]interface{}{
-				"error": err.Error(),
-			},
+			Body:       err.Error(),
 		}
 	}
 
 	return protocols.HttpResponse{
 		StatusCode: http.StatusOK,
-		Body: map[string]interface{}{
-			"payload": flaggerPayload,
-		},
+		Body:       flaggerPayload,
 	}
 }

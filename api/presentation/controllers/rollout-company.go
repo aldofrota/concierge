@@ -24,16 +24,12 @@ func (controller *ConciergeCompanyController) Handle(ctx *gin.Context) protocols
 	if err != nil {
 		return protocols.HttpResponse{
 			StatusCode: http.StatusInternalServerError,
-			Body: map[string]interface{}{
-				"error": err.Error(),
-			},
+			Body:       err.Error(),
 		}
 	}
 
 	return protocols.HttpResponse{
 		StatusCode: http.StatusOK,
-		Body: map[string]interface{}{
-			"rollouts": rollouts,
-		},
+		Body:       rollouts,
 	}
 }

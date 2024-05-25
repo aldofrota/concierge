@@ -36,7 +36,7 @@ const FormLogin = ({}) => {
         const setedLanguage = storage.setData("language", language);
         if (setedUser && setedToken && setedPermissions && setedLanguage) {
           messageApi.success("Bom trabalho 😄");
-          navigate("/");
+          navigate("/dashboard");
         } else {
           messageApi.error("Erro ao efetuar Login 🥺");
         }

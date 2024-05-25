@@ -28,7 +28,7 @@ const Rollouts = () => {
       .get("/all")
       .then(async (res) => {
         setLoading(false);
-        setFlaggers(res.data.flaggers ?? []);
+        setFlaggers(res.data ?? []);
       })
       .catch((reason) => {
         setLoading(false);

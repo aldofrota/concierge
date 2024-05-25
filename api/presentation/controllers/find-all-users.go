@@ -22,9 +22,7 @@ func (controller *ConciergeFindAllUsersController) Handle(ctx *gin.Context) prot
 	if err != nil {
 		return protocols.HttpResponse{
 			StatusCode: http.StatusInternalServerError,
-			Body: map[string]interface{}{
-				"error": err.Error(),
-			},
+			Body:       err.Error(),
 		}
 	}
 

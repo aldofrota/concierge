@@ -22,7 +22,7 @@ const Data = () => {
   const getFlaggers = async () => {
     try {
       const res = await axiosInstance.get("/all");
-      const flaggersData: TRollout[] = res.data.flaggers ?? [];
+      const flaggersData: TRollout[] = res.data ?? [];
       const labels: string[] = [];
       const values: number[] = [];
       const fullRolloutIndexes: number[] = [];

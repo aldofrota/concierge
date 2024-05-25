@@ -25,9 +25,7 @@ func (controller *ConciergeUnreleaseController) Handle(ctx *gin.Context) protoco
 	if err := ctx.BindJSON(&requestBody); err != nil {
 		return protocols.HttpResponse{
 			StatusCode: http.StatusBadRequest,
-			Body: map[string]interface{}{
-				"error": "Error parsing JSON request body",
-			},
+			Body:       "Error parsing JSON request body",
 		}
 	}
 
@@ -35,9 +33,7 @@ func (controller *ConciergeUnreleaseController) Handle(ctx *gin.Context) protoco
 	if err != nil {
 		return protocols.HttpResponse{
 			StatusCode: http.StatusInternalServerError,
-			Body: map[string]interface{}{
-				"error": err.Error(),
-			},
+			Body:       err.Error(),
 		}
 	}
 

@@ -23,9 +23,7 @@ func (controller *ConciergeDeleteController) Handle(ctx *gin.Context) protocols.
 	if err != nil {
 		return protocols.HttpResponse{
 			StatusCode: http.StatusInternalServerError,
-			Body: map[string]interface{}{
-				"error": err.Error(),
-			},
+			Body:       err.Error(),
 		}
 	}
 
