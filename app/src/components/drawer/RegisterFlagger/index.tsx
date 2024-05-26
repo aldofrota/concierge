@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Button,
+  ConfigProvider,
   DatePicker,
   Drawer,
   Form,
@@ -14,18 +15,33 @@ import TextArea from "antd/es/input/TextArea";
 import { Language } from "@/types/language";
 import { TranslationServiceImpl } from "@/services/translate";
 
+import ptBR from "antd/es/locale/pt_BR";
+import esES from "antd/es/locale/es_ES";
+import enUS from "antd/es/locale/en_US";
+import { StorageServiceImpl } from "@/services/storage";
+
+type DateConfig = {
+  lang: any;
+  format: string;
+};
+
 const DrawerRegisterFlagger = ({ show, handleClose }: any) => {
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
 
+  const storage = new StorageServiceImpl();
   const translation = new TranslationServiceImpl();
   const [language, setLanguage] = useState<Language>();
+  const [dateConfig, setDateConfig] = useState<DateConfig>({
+    lang: ptBR,
+    format: "DD/MM/YYYY",
+  });
 
   const onFinish = async (data: any) => {
     setLoading(true);
     await axiosInstance
-      .post("/create", data)
+      .post("/concierge/create", data)
       .then(() => {
         setLoading(false);
         messageApi.success(language?.responsesAPI.succes_create_rollout);
@@ -37,10 +53,36 @@ const DrawerRegisterFlagger = ({ show, handleClose }: any) => {
       });
   };
 
+  const handleLanguage = () => {
+    const language = storage.getData("language");
+
+    switch (language) {
+      case "portuguese":
+        setDateConfig({
+          lang: ptBR,
+          format: "DD/MM/YYYY",
+        });
+        break;
+      case "english":
+        setDateConfig({
+          lang: enUS,
+          format: "MM/DD/YYYY",
+        });
+        break;
+      case "spanish":
+        setDateConfig({
+          lang: esES,
+          format: "DD/MM/YYYY",
+        });
+        break;
+    }
+  };
+
   useEffect(() => {
     if (show) {
       form.resetFields();
       setLanguage(translation.getTranslation());
+      handleLanguage();
     }
   }, [show]);
 
@@ -79,18 +121,20 @@ const DrawerRegisterFlagger = ({ show, handleClose }: any) => {
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            label={language?.labels_form.expiration_at}
-            name="expiration_at"
-            rules={[
-              {
-                required: true,
-                message: language?.rules.expiration_at,
-              },
-            ]}
-          >
-            <DatePicker format="DD/MM/YYYY" />
-          </Form.Item>
+          <ConfigProvider locale={dateConfig.lang}>
+            <Form.Item
+              label={language?.labels_form.expiration_at}
+              name="expiration_at"
+              rules={[
+                {
+                  required: true,
+                  message: language?.rules.expiration_at,
+                },
+              ]}
+            >
+              <DatePicker format={dateConfig.format} />
+            </Form.Item>
+          </ConfigProvider>
           <Form.Item
             label={language?.labels_form.full_rollout}
             name="full_rollout"

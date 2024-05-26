@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Spin, message } from "antd";
 
-import env from "@/config/env.json";
-import axios from "axios";
 import { StorageServiceImpl } from "@/services/storage";
+import axiosInstance from "@/services/axios.intance";
+import { TranslationServiceImpl } from "@/services/translate";
+import { Language } from "@/types/language";
 
 const initialValue = {
   email: "",
@@ -23,11 +24,13 @@ const FormLogin = ({}) => {
 
   // Services
   const storage = new StorageServiceImpl();
+  const translation = new TranslationServiceImpl();
+  const [language, setLanguage] = useState<Language>();
 
   const onFinish = async (data: { email: string; password: string }) => {
     setLoading(true);
-    await axios
-      .post(env.conciergeAuth, data)
+    await axiosInstance
+      .post("/auth", data)
       .then((res) => {
         const { token, permissions, language, ...user } = res.data;
         const setedUser = storage.setData("user", user);
@@ -35,22 +38,19 @@ const FormLogin = ({}) => {
         const setedToken = storage.setData("token", token);
         const setedLanguage = storage.setData("language", language);
         if (setedUser && setedToken && setedPermissions && setedLanguage) {
-          messageApi.success("Bom trabalho 😄");
+          setLoading(false);
           navigate("/dashboard");
-        } else {
-          messageApi.error("Erro ao efetuar Login 🥺");
         }
-        setLoading(false);
       })
       .catch((reason) => {
         setLoading(false);
-        console.log(reason);
-        messageApi.error("reason.response.error");
+        messageApi.error(reason.message);
       });
   };
 
   useEffect(() => {
-    // storage.deleteData("token");
+    storage.deleteData("token");
+    setLanguage(translation.getTranslation());
   }, []);
 
   return (
@@ -64,13 +64,13 @@ const FormLogin = ({}) => {
         layout="vertical"
       >
         <div className="title-form">
-          <h2>Login</h2>
+          <h2>{language?.titles.login}</h2>
         </div>
 
         <Form.Item
-          label="E-mail"
+          label={language?.labels_form.email}
           name="email"
-          rules={[{ required: true, message: "Informe o seu E-mail!" }]}
+          rules={[{ required: true, message: language?.rules.email }]}
           className="input-form"
         >
           <Input
@@ -78,15 +78,15 @@ const FormLogin = ({}) => {
               <span className="material-symbols-rounded icon-form">mail</span>
             }
             style={{ padding: "8px 15px" }}
-            placeholder="email@email.com"
+            placeholder={language?.placeHolders.email}
             type="email"
           />
         </Form.Item>
 
         <Form.Item
-          label="Senha"
+          label={language?.labels_form.password}
           name="password"
-          rules={[{ required: true, message: "Informe a senha!" }]}
+          rules={[{ required: true, message: language?.rules.password }]}
           className="input-form"
         >
           <Input.Password
@@ -100,10 +100,12 @@ const FormLogin = ({}) => {
 
         <Form.Item className="button">
           {!loading ? (
-            <button className="button-enter">Entrar</button>
+            <button className="button-enter">
+              {language?.actions_buttons.enter}
+            </button>
           ) : (
             <div className="info-enter">
-              <span>Entrando</span>
+              <span>{language?.actions_buttons.entering}</span>
               <Spin size="small" />
             </div>
           )}

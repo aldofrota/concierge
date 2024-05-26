@@ -8,12 +8,11 @@ import { TranslationServiceImpl } from "@/services/translate";
 import { Language } from "@/types/language";
 
 const DrawerProfileUser = ({ show, handleClose }: any) => {
-  const storage = new StorageServiceImpl();
   const [form] = Form.useForm();
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
-  const [image, setImage] = useState<any>(null);
 
+  const storage = new StorageServiceImpl();
   const translation = new TranslationServiceImpl();
   const [language, setLanguage] = useState<Language>();
 
@@ -23,19 +22,19 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
   });
 
   const onFinish = async (data: any) => {
-    // setLoading(true);
-    // const { confirmPassword, ...password } = data;
-    // await axiosInstance
-    //   .post("users/update-password", password)
-    //   .then((res) => {
-    //     setLoading(false);
-    //     messageApi.success(res.data.message);
-    //     handleClose();
-    //   })
-    //   .catch((reason) => {
-    //     messageApi.error(reason.message);
-    //     setLoading(false);
-    //   });
+    setLoading(true);
+    const { confirmPassword, ...password } = data;
+    await axiosInstance
+      .put(`users/${user._id}/update`, password)
+      .then(() => {
+        setLoading(false);
+        messageApi.success(language?.responsesAPI.update_user);
+        handleClose();
+      })
+      .catch((reason) => {
+        messageApi.error(reason.message);
+        setLoading(false);
+      });
   };
 
   // Função customizada de validação para confirmar se as senhas são iguais
@@ -44,7 +43,7 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
       if (!value || getFieldValue("password") === value) {
         return Promise.resolve();
       }
-      return Promise.reject(new Error("As senhas não coincidem!"));
+      return Promise.reject(new Error(language?.rules.passwordNotEqual));
     },
   });
 
@@ -52,8 +51,6 @@ const DrawerProfileUser = ({ show, handleClose }: any) => {
     if (show) {
       form.resetFields();
       setLanguage(translation.getTranslation());
-    } else {
-      setImage(null);
     }
   }, [show]);
 

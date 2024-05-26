@@ -21,7 +21,7 @@ const Data = () => {
 
   const getFlaggers = async () => {
     try {
-      const res = await axiosInstance.get("/all");
+      const res = await axiosInstance.get("/concierge/all");
       const flaggersData: TRollout[] = res.data ?? [];
       const labels: string[] = [];
       const values: number[] = [];
@@ -53,7 +53,7 @@ const Data = () => {
     }
   };
   useEffect(() => {
-    // setLanguage(translation.getTranslation());
+    setLanguage(translation.getTranslation());
   }, []);
 
   useEffect(() => {
@@ -71,7 +71,7 @@ const Data = () => {
         style: {
           color: "#FF4560",
         },
-        text: "🚩",
+        text: "💯",
         offsetY: -20,
       },
     }));
@@ -129,7 +129,7 @@ const Data = () => {
           <span className="title-chart">
             <span>{language?.titles.chartCompaniesInRollouts}</span>
             <span>
-              {language?.titles.legends}: <span>🚩 full rollout</span>
+              {language?.titles.legends}: <span>💯 full rollout</span>
             </span>
           </span>
           <div id="chart"></div>

@@ -8,6 +8,7 @@ import DrawerRegisterFlagger from "@/components/drawer/RegisterFlagger";
 import DrawerRelease from "@/components/drawer/Release";
 import { TranslationServiceImpl } from "@/services/translate";
 import { Language } from "@/types/language";
+import { StorageServiceImpl } from "@/services/storage";
 
 const Rollouts = () => {
   const [flaggers, setFlaggers] = useState<TRollout[]>([]);
@@ -19,13 +20,14 @@ const Rollouts = () => {
   const [removeFlagger, setRemoveFlagger] = useState<string>("");
   const [messageApi, contextHolder] = message.useMessage();
 
+  const storage = new StorageServiceImpl();
   const translation = new TranslationServiceImpl();
   const [language, setLanguage] = useState<Language>();
 
   const getFlaggers = async () => {
     setLoading(true);
     await axiosInstance
-      .get("/all")
+      .get("/concierge/all")
       .then(async (res) => {
         setLoading(false);
         setFlaggers(res.data ?? []);
@@ -60,7 +62,7 @@ const Rollouts = () => {
   const handleRemoveFlagger = async () => {
     setLoading(true);
     await axiosInstance
-      .delete(`/${removeFlagger}`)
+      .delete(`/concierge/${removeFlagger}`)
       .then(() => {
         setLoading(false);
         messageApi.success("Flagger removida 😄");
@@ -77,7 +79,7 @@ const Rollouts = () => {
   const handleFullRollout = async (rollout: TRollout) => {
     setLoading(true);
     await axiosInstance
-      .put(`/full-rollout/${rollout.flagger}`, {
+      .put(`/concierge/full-rollout/${rollout.flagger}`, {
         full_rollout: !rollout.full_rollout,
       })
       .then(() => {
@@ -147,14 +149,17 @@ const Rollouts = () => {
         <div className="flaggers">
           <div className="title-flaggers">
             <span className="label">{language?.titles.flaggers}</span>
-            <Tooltip title={language?.tooltips.add} placement="bottom">
-              <span
-                className="material-symbols-rounded icon"
-                onClick={handleDrawerRegister}
-              >
-                control_point_duplicate
-              </span>
-            </Tooltip>
+            {(storage.getData("permissions").admin ||
+              storage.getData("permissions").create_rollout) && (
+              <Tooltip title={language?.tooltips.add} placement="bottom">
+                <span
+                  className="material-symbols-rounded icon"
+                  onClick={handleDrawerRegister}
+                >
+                  control_point_duplicate
+                </span>
+              </Tooltip>
+            )}
           </div>
           <div className="flaggers-list">
             {flaggers.map((flagger) => {
@@ -185,7 +190,11 @@ const Rollouts = () => {
                           ? language?.popsconfirm.full_rollout.description_2
                           : language?.popsconfirm.full_rollout.description
                       }
-                      open={fullRollout(flagger.flagger)}
+                      open={
+                        (storage.getData("permissions").admin ||
+                          storage.getData("permissions").update_release) &&
+                        fullRollout(flagger.flagger)
+                      }
                       onCancel={() => setFullRolloutFlagger("")}
                       onConfirm={() => handleFullRollout(flagger)}
                       okButtonProps={{ loading }}
@@ -211,17 +220,20 @@ const Rollouts = () => {
                       okText={language?.actions_buttons.yes}
                       cancelText={language?.actions_buttons.no}
                     >
-                      <Tooltip
-                        title={language?.tooltips.remove}
-                        placement="bottom"
-                      >
-                        <span
-                          className="material-symbols-rounded icon"
-                          onClick={() => setRemoveFlagger(flagger.flagger)}
+                      {(storage.getData("permissions").admin ||
+                        storage.getData("permissions").remove_rollout) && (
+                        <Tooltip
+                          title={language?.tooltips.remove}
+                          placement="bottom"
                         >
-                          delete
-                        </span>
-                      </Tooltip>
+                          <span
+                            className="material-symbols-rounded icon"
+                            onClick={() => setRemoveFlagger(flagger.flagger)}
+                          >
+                            delete
+                          </span>
+                        </Tooltip>
+                      )}
                     </Popconfirm>
                   </div>
                 </div>

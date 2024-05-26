@@ -1,56 +1,46 @@
 import "./index.scss";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Container } from "react-bootstrap";
-import { Badge, Pagination, Popconfirm, Table, Tooltip, message } from "antd";
+import { Popconfirm, Table, Tooltip, message } from "antd";
 
-import { QueryResponseUser, User } from "@/types/user";
+import { User } from "@/types/user";
 
-import axiosInstance from "../../services/axios.intance";
-import { StorageServiceImpl } from "../../services/storage";
+import axiosInstance from "@/services/axios.intance";
+import { StorageServiceImpl } from "@/services/storage";
 
-import DrawerAboutUser from "../../components/drawer/AboutUser";
-import DrawerRegisterUser from "../../components/drawer/RegisterUser";
-import DrawerFiltersUsers from "../../components/drawer/FiltersUsers";
+import DrawerAboutUser from "@/components/drawer/AboutUser";
+import DrawerRegisterUser from "@/components/drawer/RegisterUser";
+import { TranslationServiceImpl } from "@/services/translate";
+import { Language } from "@/types/language";
 
 const Users = () => {
   const storage = new StorageServiceImpl();
-  const navigate = useNavigate();
-  const [messageApi, contextHolder] = message.useMessage();
-  const [rowSelected, setRowSelected] = useState<string[]>([]);
-  const [filters, setFilters] = useState<any>({});
-  const [showFilters, setShowFilters] = useState(false);
-  const [loadingDelete, setLoadingDelete] = useState(false);
+  const translation = new TranslationServiceImpl();
+  const [language, setLanguage] = useState<Language>();
 
-  // Variáveis referentes aos offcanvas
+  const [messageApi, contextHolder] = message.useMessage();
+
+  // Variáveis referentes aos Drawers
   const [showRegisterUser, setShowRegisterUser] = useState(false);
   const [showAboutUser, setShowAboutUser] = useState(false);
   const [showAboutUserId, setShowAboutUserId] = useState<any>(null);
 
-  const [dataSource, setDataSource] = useState<QueryResponseUser>({
-    users: [],
-    meta: {
-      page: 1,
-      limit: 10,
-      total: 0,
-      totalPages: 1,
-    },
-  });
+  const [dataSource, setDataSource] = useState<User[]>([]);
   const columns = [
     {
-      title: "Nome",
+      title: language?.labels_form.name,
       dataIndex: "name",
     },
     {
-      title: "E-mail",
+      title: language?.labels_form.email,
       dataIndex: "email",
     },
     {
-      title: "Status",
+      title: language?.labels_form.status,
       dataIndex: "status",
       render: (status: string) => (
         <span>
-          {status === "A" ? (
+          {status === "active" ? (
             <span
               style={{ color: "green" }}
               className="material-symbols-rounded cursor-default"
@@ -71,87 +61,77 @@ const Users = () => {
     {
       title: "",
       dataIndex: "",
-      width: 70,
+      width: 120,
       render: (_: any, record: any) => (
-        <Tooltip title="Informações do usuário" color={"var(--concierge-1)"}>
-          <span
-            className="material-symbols-rounded cursor-pointer"
-            onClick={() => handleAboutUser(record.id)}
-          >
-            info
-          </span>
-        </Tooltip>
+        <div className="actions-user">
+          <Tooltip title={language?.tooltips.about} placement="bottom">
+            <span
+              className="material-symbols-rounded icon"
+              onClick={() => handleAboutUser(record._id)}
+            >
+              info
+            </span>
+          </Tooltip>
+          {storage.getData("permissions").admin && (
+            <>
+              <Popconfirm
+                title={language?.popsconfirm.update_status.title}
+                description={
+                  record.status === "active"
+                    ? language?.popsconfirm.update_status.description
+                    : language?.popsconfirm.update_status.description_2
+                }
+                onConfirm={() => handleStatusUser(record)}
+                okText={language?.actions_buttons.yes}
+                cancelText={language?.actions_buttons.no}
+              >
+                <Tooltip
+                  title={
+                    record.status === "active"
+                      ? language?.tooltips.inactive
+                      : language?.tooltips.active
+                  }
+                  placement="bottom"
+                >
+                  {record.status === "active" ? (
+                    <span className="material-symbols-rounded icon">
+                      toggle_on
+                    </span>
+                  ) : (
+                    <span className="material-symbols-rounded icon">
+                      toggle_off
+                    </span>
+                  )}
+                </Tooltip>
+              </Popconfirm>
+              <Popconfirm
+                title={language?.popsconfirm.remove_user.title}
+                description={language?.popsconfirm.remove_user.description}
+                onConfirm={() => deleteUser(record._id)}
+                okText={language?.actions_buttons.yes}
+                cancelText={language?.actions_buttons.no}
+              >
+                <Tooltip title={language?.tooltips.remove} placement="bottom">
+                  <span className="material-symbols-rounded icon">delete</span>
+                </Tooltip>
+              </Popconfirm>
+            </>
+          )}
+        </div>
       ),
     },
   ];
-  const rowSelection = {
-    onChange: (_: React.Key[], selectedRows: User[]) => {
-      setRowSelected([]);
-      setRowSelected([...selectedRows.map((row) => row.id)]);
-    },
-    getCheckboxProps: (record: User) => ({
-      name: record.name,
-    }),
+
+  const getUsers = async () => {
+    await axiosInstance
+      .get("/users/all")
+      .then((res) => {
+        setDataSource(res.data);
+      })
+      .catch((reason) => {
+        messageApi.error(reason.message);
+      });
   };
-
-  const onChangePagination = async (page: number, pageSize: number) => {
-    dataSource.meta.page = page;
-    dataSource.meta.limit = pageSize;
-    // await getUsers(filters);
-  };
-
-  const qtdSelectedMsg = (qtd: number) => {
-    if (qtd > 1) {
-      return `${qtd} Selecionados`;
-    } else {
-      return `${qtd} Selecionado`;
-    }
-  };
-
-  const handleFilters = () => {
-    setShowFilters(!showFilters);
-  };
-
-  const applyFilters = (applyFilter: {
-    name: string;
-    email: string;
-    status: string;
-  }) => {
-    if (Object.entries(applyFilter).length === 0) {
-      storage.deleteData("filters_users");
-      setFilters({});
-    } else {
-      storage.setData("filters_users", applyFilter);
-      setFilters(applyFilter);
-    }
-    handleFilters();
-    // getUsers(applyFilter, true);
-  };
-
-  // const getUsers = async (
-  //   filters: { name: string; status: string },
-  //   resetPage: boolean = false
-  // ) => {
-  //   const user: User = storage.getData("user");
-  //   const pagination = {
-  //     page: resetPage ? 1 : dataSource.meta.page,
-  //     limit: dataSource.meta.limit,
-  //   };
-  //   const query = {
-  //     companyId: user.companyId,
-  //     ...filters,
-  //     ...pagination,
-  //   };
-
-  //   await axiosInstance
-  //     .get("/users", { params: query })
-  //     .then((res) => {
-  //       setDataSource(res.data);
-  //     })
-  //     .catch((reason) => {
-  //       messageApi.error(reason.message);
-  //     });
-  // };
 
   const handleAboutUser = (id: any = null) => {
     if (typeof id === "string") {
@@ -167,43 +147,39 @@ const Users = () => {
     setShowRegisterUser(!showRegisterUser);
   };
 
-  const getDataFilters = () => {
-    const contain_filters = storage.getData("filters_users");
-    if (contain_filters) {
-      setFilters(contain_filters);
-      // getUsers(contain_filters, true);
-    } else {
-      setFilters({});
-      // getUsers(filters, true);
-    }
+  const deleteUser = async (id: string) => {
+    await axiosInstance
+      .delete(`/users/${id}/delete`)
+      .then(() => {
+        messageApi.success(language?.responsesAPI.remove_user);
+        getUsers();
+      })
+      .catch((reason) => {
+        messageApi.error(reason.message);
+      });
   };
 
-  const deleteUsers = async () => {
-    // setLoadingDelete(true);
-    // messageApi.open({
-    //   type: "loading",
-    //   content: "Deletando usuário...",
-    //   duration: 0, // Duração como 0 para não fechar automaticamente
-    // });
-    // await axiosInstance
-    //   .post("/users/delete", rowSelected)
-    //   .then((res) => {
-    //     setLoadingDelete(false);
-    //     messageApi.destroy();
-    //     messageApi.success(res.data.message);
-    //     setRowSelected([]);
-    //     getDataFilters();
-    //   })
-    //   .catch((reason) => {
-    //     setLoadingDelete(false);
-    //     messageApi.destroy();
-    //     messageApi.error(reason.message);
-    //   });
+  const handleStatusUser = async (user: User) => {
+    const status = user.status === "active" ? "inactive" : "active";
+
+    await axiosInstance
+      .put(`users/${user._id}/update`, { status })
+      .then(() => {
+        messageApi.success(language?.responsesAPI.update_status);
+        getUsers();
+      })
+      .catch((reason) => {
+        messageApi.error(reason.message);
+      });
   };
 
   useEffect(() => {
-    if (!showAboutUser || !showRegisterUser) getDataFilters();
+    getUsers();
   }, [showAboutUser, showRegisterUser]);
+
+  useEffect(() => {
+    setLanguage(translation.getTranslation());
+  }, []);
 
   return (
     <>
@@ -217,100 +193,24 @@ const Users = () => {
         show={showRegisterUser}
         handleClose={handleRegisterUser}
       />
-      <DrawerFiltersUsers
-        show={showFilters}
-        handleClose={handleFilters}
-        applyFilters={applyFilters}
-        preFilters={filters}
-      />
       <Container fluid="sm">
         <div className="main-users">
           <div className="actions">
-            <div className="filters-actions">
-              <div className="filter">
-                <Tooltip title="Filtros" color={"var(--concierge-1)"}>
-                  <Badge count={Object.keys(filters).length} size="small">
-                    {/* <FaFilter className="icon" onClick={handleFilters} /> */}
-                  </Badge>
-                </Tooltip>
-              </div>
-              <div className="action">
-                {storage.getData("permissions").registerUser && (
-                  <button className="btn-standard" onClick={handleRegisterUser}>
-                    Criar novo
-                  </button>
-                )}
-              </div>
-            </div>
-            <div
-              className={`action-itens-selected ${
-                rowSelected.length > 0 ? "active" : ""
-              }`}
-            >
-              <span className="qtd">{qtdSelectedMsg(rowSelected.length)}</span>
-              <div className="btns">
-                {storage.getData("permissions").deleteUser && (
-                  <>
-                    <Popconfirm
-                      title="Excluir usuários"
-                      description="Você deseja excluir os usuários selecionados?"
-                      onConfirm={deleteUsers}
-                      okText="Sim"
-                      cancelText="Não"
-                    >
-                      <Tooltip
-                        title="Excluir usuários selecionados"
-                        color={"var(--concierge-1)"}
-                      >
-                        <button
-                          disabled={loadingDelete}
-                          className="button-action"
-                        >
-                          Excluir
-                        </button>
-                      </Tooltip>
-                    </Popconfirm>
-                    <Tooltip
-                      title="Só é possível excluir o usuário se não houver nenhuma ação vinculada ao mesmo."
-                      color={"var(--concierge-1)"}
-                    >
-                      <span
-                        style={{ cursor: "help" }}
-                        className="material-symbols-rounded cursor-pointer"
-                      >
-                        info
-                      </span>
-                    </Tooltip>
-                  </>
-                )}
-              </div>
-            </div>
+            {storage.getData("permissions").admin && (
+              <button className="btn-create" onClick={handleRegisterUser}>
+                {language?.actions_buttons.create_new}
+              </button>
+            )}
           </div>
-          <div className="table-departments">
+          <div className="table-users">
             <Table
-              rowSelection={{
-                type: "checkbox",
-                ...rowSelection,
-              }}
-              rowKey={(row) => row.id}
+              rowKey={(row) => row._id}
               columns={columns}
-              dataSource={dataSource.users}
-              size="small"
+              dataSource={dataSource}
               pagination={{
                 position: ["none", "none"],
-                pageSize: dataSource.meta.limit,
               }}
-              scroll={{ y: 270 }}
-            />
-            <Pagination
-              className="pagination-table"
-              total={dataSource.meta.total}
-              pageSize={dataSource.meta.limit}
-              current={dataSource.meta.page}
-              showSizeChanger
-              showQuickJumper
-              onChange={onChangePagination}
-              showTotal={(total) => `Total de ${total} itens`}
+              scroll={{ y: 400 }}
             />
           </div>
         </div>

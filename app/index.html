@@ -2,13 +2,38 @@
 <html translate="no">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/ico" href="/favicon.ico" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0,200"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Concierge</title>
+    <link id="favicon" rel="icon" href="favicon-white.ico" />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const lightFavicon = "favicon-black.ico";
+        const darkFavicon = "favicon-white.ico";
+
+        const updateFavicon = (mode) => {
+          const favicon = document.getElementById("favicon");
+          if (favicon) {
+            favicon.href = mode === "dark" ? darkFavicon : lightFavicon;
+          }
+        };
+
+        // Check initial theme
+        const isDarkMode =
+          window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches;
+        updateFavicon(isDarkMode ? "dark" : "light");
+
+        // Listen for changes in the theme
+        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+        mediaQuery.addEventListener("change", (e) => {
+          updateFavicon(e.matches ? "dark" : "light");
+        });
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>

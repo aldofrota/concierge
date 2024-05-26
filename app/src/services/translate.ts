@@ -26,7 +26,7 @@ export class TranslationServiceImpl implements TranslationService {
       case "spanish":
         return es;
       default:
-        return en;
+        return pt;
     }
   }
 }

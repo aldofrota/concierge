@@ -26,7 +26,6 @@ type UserPermissions struct {
 	CreateRollout bool `json:"create_rollout" bson:"create_rollout"`
 	UpdateRelease bool `json:"update_release" bson:"update_release"`
 	RemoveRollout bool `json:"remove_rollout" bson:"remove_rollout"`
-	CreateUser    bool `json:"create_user" bson:"create_user"`
 	Admin         bool `json:"admin" bson:"admin"`
 }
 
@@ -38,7 +37,8 @@ type AuthUser struct {
 type Mongo interface {
 	FindAllUsers() ([]UserStruct, error)
 	FindUserByEmail(email string) (UserStruct, error)
+	FindUserById(id string) (UserStruct, error)
 	CreateUser(UserStruct UserStruct) error
-	UpdateUser(id string, UserStruct UserStruct) error
+	UpdateUser(id string, UserStruct UserStruct) (UserPermissions, error)
 	DeleteUser(id string) error
 }

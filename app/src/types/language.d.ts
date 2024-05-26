@@ -1,5 +1,6 @@
 export interface Language {
   copy: string;
+  welcome: string;
   menu: Menu;
   actions_buttons: ActionsButtons;
   drawers: Drawers;
@@ -19,6 +20,9 @@ export interface ResponsesAPI {
   remove_full_rollout: string;
   err_add_full_rollout: string;
   err_remove_full_rollout: string;
+  update_status: string;
+  update_user: string;
+  remove_user: string;
 }
 
 type PopConfirmStruct = {
@@ -32,7 +36,13 @@ export interface Popsconfirm {
     description: string;
     description_2: string;
   };
+  update_status: {
+    title: string;
+    description: string;
+    description_2: string;
+  };
   remove_flagger: PopConfirmStruct;
+  remove_user: PopConfirmStruct;
 }
 
 export interface Tooltips {
@@ -42,16 +52,25 @@ export interface Tooltips {
   rollouts_2: string;
   remove: string;
   add: string;
+  inactive: string;
+  active: string;
+  about: string;
 }
 
 export interface PlaceHolders {
   search: string;
   type_it: string;
+  name: string;
+  email: string;
+  password: string;
+  repeatPassword: string;
+  language: string;
 }
 
 export interface Titles {
   flaggers: string;
   companies: string;
+  login: string;
   legends: string;
   chartCompaniesInRollouts: string;
   flaggersExpirateded: string;
@@ -59,7 +78,16 @@ export interface Titles {
 }
 
 export interface LabelsForm {
+  name: string;
+  email: string;
+  status: string;
   password: string;
+  language: string;
+  create_rollout: string;
+  update_release: string;
+  update_user: string;
+  remove_rollout: string;
+  admin: string;
   confirmPassword: string;
   flagger: string;
   expiration_at: string;
@@ -68,7 +96,12 @@ export interface LabelsForm {
 }
 
 export interface Rules {
+  name: string;
+  email: string;
+  invalidEmail: string;
   password: string;
+  passwordNotEqual: string;
+  language: string;
   flagger: string;
   expiration_at: string;
   description: string;
@@ -80,6 +113,9 @@ export interface ActionsButtons {
   yes: string;
   no: string;
   logout: string;
+  create_new: string;
+  enter: string;
+  entering: string;
 }
 
 export interface Menu {
@@ -91,7 +127,8 @@ export interface Menu {
 
 export interface Drawers {
   register_flagger: string;
+  register_user: string;
+  user_data: string;
   profile: string;
   release: string;
-  register_user: string;
 }

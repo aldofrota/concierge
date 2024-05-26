@@ -1,9 +1,19 @@
-import "./index.scss";
 import { useEffect, useState } from "react";
-import axiosInstance from "../../../services/axios.intance";
-import { Checkbox, Drawer, Form, Input, Spin, Switch, message } from "antd";
-import { StorageServiceImpl } from "../../../services/storage";
-import moment from "moment";
+import axiosInstance from "@/services/axios.intance";
+import {
+  Button,
+  Checkbox,
+  Drawer,
+  Form,
+  Input,
+  Select,
+  Space,
+  Switch,
+  message,
+} from "antd";
+import { StorageServiceImpl } from "@/services/storage";
+import { TranslationServiceImpl } from "@/services/translate";
+import { Language } from "@/types/language";
 
 const DrawerAboutUser = ({ show, handleClose, userId }: any) => {
   const storage = new StorageServiceImpl();
@@ -11,25 +21,30 @@ const DrawerAboutUser = ({ show, handleClose, userId }: any) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState(false);
 
+  const translation = new TranslationServiceImpl();
+  const [language, setLanguage] = useState<Language>();
+
   const [updateUser, setUpdateUser] = useState<boolean>(false);
   const [originalUser, setOriginalUser] = useState<any>();
   const [userData, setUserData] = useState<any>({});
+  const [password, setPassword] = useState<string>("");
 
   const getUser = async (id: string) => {
-    // setLoading(true);
-    // await axiosInstance
-    //   .get("/users/" + id)
-    //   .then(async (res) => {
-    //     setLoading(false);
-    //     res.data.status = res.data.status === "A" ? true : false;
-    //     setUserData({ ...res.data });
-    //     form.setFieldsValue(res.data);
-    //   })
-    //   .catch((reason) => {
-    //     setLoading(false);
-    //     messageApi.error("Erro ao buscar os dados do Usuário 🥺");
-    //     console.error(reason);
-    //   });
+    setLoading(true);
+
+    await axiosInstance
+      .get("/users/" + id)
+      .then(async (res) => {
+        setLoading(false);
+        res.data.status = res.data.status === "active" ? true : false;
+        setUserData({ ...res.data });
+        form.setFieldsValue(res.data);
+      })
+      .catch((reason) => {
+        setLoading(false);
+        messageApi.error("Erro ao buscar os dados do Usuário 🥺");
+        console.error(reason);
+      });
   };
 
   const handleUpdateUser = (status: boolean) => {
@@ -43,39 +58,41 @@ const DrawerAboutUser = ({ show, handleClose, userId }: any) => {
   };
 
   const onFinish = async (data: any) => {
-    // setLoading(true);
-    // data.status = data.status === true ? "A" : "I";
-    // await axiosInstance
-    //   .put("users/" + userId, data)
-    //   .then((res) => {
-    //     messageApi.success(res.data.message);
-    //     const user = storage.getData("user");
-    //     if (user.id === userId) {
-    //       storage.setData("permissions", res.data.permissions);
-    //     }
-    //     getUser(userId);
-    //   })
-    //   .catch((reason) => {
-    //     messageApi.error(reason.message);
-    //     setLoading(false);
-    //   });
+    setLoading(true);
+    await axiosInstance
+      .put(`users/${userId}/update`, data)
+      .then((res) => {
+        messageApi.success("Status atualizado");
+        const user = storage.getData("user");
+        if (user.id === userId) {
+          storage.setData("permissions", res.data);
+        }
+        handleClose();
+      })
+      .catch((reason) => {
+        messageApi.error(reason.message);
+        setLoading(false);
+      });
   };
 
-  const handlePermission = (label: string, value: boolean) => {
-    const updatedPermissions = {
-      ...userData.permissions,
-      [label]: value,
-    };
+  // Função customizada de validação para confirmar se as senhas são iguais
+  const validatePasswordConfirmation = ({ getFieldValue }: any) => ({
+    validator(_: any, value: string) {
+      if (!value || getFieldValue("password") === value) {
+        return Promise.resolve();
+      }
+      return Promise.reject(new Error("As senhas não coincidem!"));
+    },
+  });
 
-    setUserData({
-      ...userData,
-      permissions: updatedPermissions,
-    });
+  const handlePassword = (value: string) => {
+    setPassword(value);
   };
 
   useEffect(() => {
     if (userId) {
       getUser(userId);
+      setLanguage(translation.getTranslation());
     } else {
       setUpdateUser(false);
     }
@@ -84,264 +101,161 @@ const DrawerAboutUser = ({ show, handleClose, userId }: any) => {
   return (
     <>
       {contextHolder}
-      <Drawer open={show} onClose={handleClose} title="Dados do usuário">
-        {loading ? (
-          <div className="loading-data">
-            <Spin size="large" />
-          </div>
-        ) : (
-          <div className="main-about-user">
-            <div className="body-about-user">
-              {storage.getData("permissions").updateUser && (
-                <Checkbox
-                  className="label-edit"
-                  checked={updateUser}
-                  onChange={(e) => handleUpdateUser(e.target.checked)}
-                >
-                  <span>Editar usuário</span>
-                </Checkbox>
-              )}
-              <Form
-                layout="vertical"
-                disabled={!updateUser}
-                form={form}
-                key={userId}
-                onFinish={onFinish}
+      <Drawer
+        open={show}
+        onClose={handleClose}
+        title={language?.drawers.user_data}
+        extra={
+          updateUser && (
+            <Space>
+              <Button onClick={handleClose}>
+                {language?.actions_buttons.cancel}
+              </Button>
+              <Button
+                type="primary"
+                onClick={() => form.submit()}
+                loading={loading}
               >
+                {language?.actions_buttons.save}
+              </Button>
+            </Space>
+          )
+        }
+      >
+        <div className="main-about-user">
+          {storage.getData("permissions").admin && (
+            <Checkbox
+              className="label-edit"
+              checked={updateUser}
+              onChange={(e) => handleUpdateUser(e.target.checked)}
+            >
+              <span>{language?.labels_form.update_user}</span>
+            </Checkbox>
+          )}
+          <Form
+            layout="vertical"
+            disabled={!updateUser}
+            form={form}
+            onFinish={onFinish}
+          >
+            <Form.Item
+              label={language?.labels_form.name}
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: language?.rules.name,
+                },
+              ]}
+            >
+              <Input placeholder={language?.placeHolders.name} />
+            </Form.Item>
+            <Form.Item
+              label={language?.labels_form.email}
+              name="email"
+              rules={[
+                {
+                  type: "email",
+                  message: language?.rules.invalidEmail,
+                },
+                {
+                  required: true,
+                  message: language?.rules.email,
+                },
+              ]}
+            >
+              <Input placeholder={language?.placeHolders.email} />
+            </Form.Item>
+            {updateUser && (
+              <>
                 <Form.Item
-                  label="Nome"
-                  name="name"
+                  label={language?.labels_form.password}
+                  name="password"
                   rules={[
                     {
-                      required: true,
-                      message: "Informe o nome do usuário!",
+                      required: password.length > 0,
+                      message: language?.rules.password,
                     },
                   ]}
                 >
-                  <Input />
+                  <Input.Password
+                    onChange={(e) => handlePassword(e.target.value)}
+                    placeholder={language?.placeHolders.password}
+                  />
                 </Form.Item>
                 <Form.Item
-                  label="E-mail"
-                  name="email"
+                  label={language?.labels_form.confirmPassword}
+                  name="confirmPassword"
+                  dependencies={["password"]}
                   rules={[
                     {
-                      type: "email",
-                      message: "E-mail inválido!",
+                      required: password.length > 0,
+                      message: language?.rules.password,
                     },
-                    {
-                      required: true,
-                      message: "Informe o E-mail!",
-                    },
+                    ({ getFieldValue }) =>
+                      validatePasswordConfirmation({ getFieldValue }),
                   ]}
                 >
-                  <Input />
+                  <Input.Password
+                    placeholder={language?.placeHolders.repeatPassword}
+                  />
                 </Form.Item>
-                <Form.Item label="Status" name="status" valuePropName="checked">
-                  <Switch unCheckedChildren="Inativo" checkedChildren="Ativo" />
-                </Form.Item>
-                <div className="divider-title">Permissões</div>
-                <div className="divider-item">
-                  <span>Menu Contatos</span>
-                  <Form.Item
-                    name={["permissions", "menuLeads"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuLeads", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Negociações</span>
-                  <Form.Item
-                    name={["permissions", "menuDeals"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuDeals", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Faturamentos</span>
-                  <Form.Item
-                    name={["permissions", "menuInvoicing"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuInvoicing", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Dashboard</span>
-                  <Form.Item
-                    name={["permissions", "menuDashboard"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuDashboard", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Meta Ads</span>
-                  <Form.Item
-                    name={["permissions", "menuMeta"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch onChange={(e) => handlePermission("menuMeta", e)} />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Google Ads</span>
-                  <Form.Item
-                    name={["permissions", "menuGoogle"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuGoogle", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu campanhas Whatsapp</span>
-                  <Form.Item
-                    name={["permissions", "menuWhatsapp"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuWhatsapp", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Redes Sociais</span>
-                  <Form.Item
-                    name={["permissions", "menuChannels"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuChannels", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Webhooks</span>
-                  <Form.Item
-                    name={["permissions", "menuWebhooks"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuWebhooks", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Empresa</span>
-                  <Form.Item
-                    name={["permissions", "menuCompany"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuCompany", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="divider-item">
-                  <span>Menu Usuários</span>
-                  <Form.Item
-                    name={["permissions", "menuUsers"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuUsers", e)}
-                    />
-                  </Form.Item>
-                </div>
-                {userData?.permissions?.menuUsers && (
-                  <div className="switch-permissions">
-                    <Form.Item
-                      name={["permissions", "registerUser"]}
-                      valuePropName="checked"
-                      className="permission"
-                    >
-                      <Switch
-                        unCheckedChildren="Cadastrar"
-                        checkedChildren="Cadastrar"
-                      />
-                    </Form.Item>
-                    {(storage.getData("user").owner ||
-                      storage.getData("permissions").updateUser) && (
-                      <Form.Item
-                        name={["permissions", "updateUser"]}
-                        valuePropName="checked"
-                        className="permission"
-                      >
-                        <Switch
-                          unCheckedChildren="Atualizar"
-                          checkedChildren="Atualizar"
-                        />
-                      </Form.Item>
-                    )}
-                    <Form.Item
-                      name={["permissions", "deleteUser"]}
-                      valuePropName="checked"
-                      className="permission"
-                    >
-                      <Switch
-                        unCheckedChildren="Deletar"
-                        checkedChildren="Deletar"
-                      />
-                    </Form.Item>
-                  </div>
-                )}
-                <div className="divider-item">
-                  <span>Menu Funis e etapas</span>
-                  <Form.Item
-                    name={["permissions", "menuFunnels"]}
-                    valuePropName="checked"
-                    className="divider-switch"
-                  >
-                    <Switch
-                      onChange={(e) => handlePermission("menuFunnels", e)}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="createdAt-item">
-                  <span className="label">Cadastrado em</span>
-                  <span className="data">
-                    {moment(userData.createdAt).format("DD/MM/YYYY HH:mm")}
-                  </span>
-                </div>
-              </Form>
-              <div></div>
-            </div>
-            {updateUser ? (
-              <div className="footer-about-user">
-                <button className="btn-danger" onClick={() => handleClose()}>
-                  Cancelar
-                </button>
-                <button className="btn-standard" onClick={() => form.submit()}>
-                  Salvar
-                </button>
-              </div>
-            ) : (
-              ""
+              </>
             )}
-          </div>
-        )}
+
+            <Form.Item
+              label={language?.labels_form.language}
+              name="language"
+              rules={[{ required: true, message: language?.rules.language }]}
+            >
+              <Select allowClear placeholder={language?.placeHolders.language}>
+                <Select.Option value="portuguese">Português</Select.Option>
+                <Select.Option value="english">English</Select.Option>
+                <Select.Option value="spanish">Español</Select.Option>
+              </Select>
+            </Form.Item>
+            <div className="divider-item">
+              <span>{language?.labels_form.create_rollout}</span>
+              <Form.Item
+                name={["permissions", "create_rollout"]}
+                valuePropName="checked"
+                className="divider-switch"
+              >
+                <Switch />
+              </Form.Item>
+            </div>
+            <div className="divider-item">
+              <span>{language?.labels_form.update_release}</span>
+              <Form.Item
+                name={["permissions", "update_release"]}
+                valuePropName="checked"
+                className="divider-switch"
+              >
+                <Switch />
+              </Form.Item>
+            </div>
+            <div className="divider-item">
+              <span>{language?.labels_form.remove_rollout}</span>
+              <Form.Item
+                name={["permissions", "remove_rollout"]}
+                valuePropName="checked"
+                className="divider-switch"
+              >
+                <Switch />
+              </Form.Item>
+            </div>
+            <div className="divider-item">
+              <span>{language?.labels_form.admin}</span>
+              <Form.Item
+                name={["permissions", "admin"]}
+                valuePropName="checked"
+                className="divider-switch"
+              >
+                <Switch />
+              </Form.Item>
+            </div>
+          </Form>
+        </div>
       </Drawer>
     </>
   );

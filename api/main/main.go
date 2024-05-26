@@ -34,6 +34,11 @@ func main() {
 			panic("Falha ao conectar ao banco de dados Redis")
 		}
 
+		err = factories.NewConciergeFindUserDefaultFactory()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+
 		if err := grpc.Run(); err != nil && err != http.ErrServerClosed {
 			panic(err)
 		}

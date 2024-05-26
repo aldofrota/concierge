@@ -3,6 +3,7 @@ package mongo
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/aldofrota/concierge/data/protocols"
@@ -56,7 +57,7 @@ func (helper MongoHelper) FindUserByEmail(email string) (protocols.UserStruct, e
 	defer cancel()
 
 	var user protocols.UserStruct
-	filter := bson.D{{Key: "email", Value: email}}
+	filter := bson.D{{Key: "email", Value: email}, {Key: "status", Value: "active"}}
 	err := helper.collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -64,6 +65,30 @@ func (helper MongoHelper) FindUserByEmail(email string) (protocols.UserStruct, e
 		}
 		return user, err
 	}
+
+	return user, nil
+}
+
+func (helper MongoHelper) FindUserById(id string) (protocols.UserStruct, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	objID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return protocols.UserStruct{}, err
+	}
+
+	var user protocols.UserStruct
+	filter := bson.D{{Key: "_id", Value: objID}}
+	err = helper.collection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return user, fmt.Errorf("user with id '%s' does not exist", id)
+		}
+		return user, err
+	}
+
+	user.Password = ""
 
 	return user, nil
 }
@@ -98,35 +123,63 @@ func (helper MongoHelper) CreateUser(user protocols.UserStruct) error {
 	return nil
 }
 
-func (helper MongoHelper) UpdateUser(id string, user protocols.UserStruct) error {
+func (helper MongoHelper) UpdateUser(id string, user protocols.UserStruct) (protocols.UserPermissions, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	objID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
-		return err
+		return protocols.UserPermissions{}, err
 	}
 
-	// If password is being updated, hash the new password
+	// Create a dynamic update document
+	updateFields := bson.D{}
+
+	if user.Name != "" {
+		updateFields = append(updateFields, bson.E{Key: "name", Value: user.Name})
+	}
+	if user.Email != "" {
+		updateFields = append(updateFields, bson.E{Key: "email", Value: user.Email})
+	}
 	if user.Password != "" {
 		hashedPassword, err := hashPassword(user.Password)
 		if err != nil {
-			return err
+			return protocols.UserPermissions{}, err
 		}
-		user.Password = hashedPassword
+		updateFields = append(updateFields, bson.E{Key: "password", Value: hashedPassword})
+	}
+	if user.Language != "" {
+		updateFields = append(updateFields, bson.E{Key: "language", Value: user.Language})
+	}
+	if user.Status != "" {
+		updateFields = append(updateFields, bson.E{Key: "status", Value: user.Status})
 	}
 
-	filter := bson.D{{Key: "_id", Value: objID}}
+	// Update nested fields (permissions)
+	if !reflect.DeepEqual(user.Permissions, protocols.UserPermissions{}) {
+		updateFields = append(updateFields, bson.E{Key: "permissions", Value: user.Permissions})
+	}
+
+	// Prepare the update document
 	update := bson.D{
-		{Key: "$set", Value: user},
+		{Key: "$set", Value: updateFields},
 	}
+	filter := bson.D{{Key: "_id", Value: objID}}
 
+	// Perform the update operation
 	_, err = helper.collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		return err
+		return protocols.UserPermissions{}, err
 	}
 
-	return nil
+	// Retrieve the updated user data to return updated permissions
+	var updatedUser protocols.UserStruct
+	err = helper.collection.FindOne(ctx, filter).Decode(&updatedUser)
+	if err != nil {
+		return protocols.UserPermissions{}, err
+	}
+
+	return updatedUser.Permissions, nil
 }
 
 func (helper MongoHelper) DeleteUser(id string) error {

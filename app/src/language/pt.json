@@ -1,5 +1,6 @@
 {
   "copy": "Criado por Aldo Frota",
+  "welcome": "Bem vindo ao Concierge",
   "menu": {
     "data": "Dashboard",
     "rollouts": "Rollouts",
@@ -11,16 +12,29 @@
     "save": "Salvar",
     "yes": "Sim",
     "no": "Não",
-    "logout": "Sair"
+    "logout": "Sair",
+    "create_new": "Criar novo",
+    "enter": "Entrar",
+    "entering": "Entrando"
   },
   "drawers": {
     "register_flagger": "Registrar flagger",
     "profile": "Perfil",
     "release": "Release",
-    "register_user": "Registrar usuário"
+    "register_user": "Registrar usuário",
+    "user_data": "Dados do usuário"
   },
   "labels_form": {
+    "name": "Nome",
+    "email": "E-mail",
+    "status": "Status",
     "password": "Senha",
+    "language": "Idioma",
+    "create_rollout": "Criar rollout",
+    "update_release": "Atualizar release",
+    "remove_rollout": "Remover rollout",
+    "update_user": "Editar usuário",
+    "admin": "Administrador",
     "confirmPassword": "Confirmar Senha",
     "flagger": "Nome da flagger",
     "expiration_at": "Data de Expiração",
@@ -28,14 +42,20 @@
     "description": "Descrição"
   },
   "rules": {
-    "password": "Insira a Senha!",
+    "password": "Insira a Senha",
     "flagger": "Insira a flagger",
     "expiration_at": "Insira a data de expiração",
-    "description": "Insira a descrição"
+    "description": "Insira a descrição",
+    "name": "Insira o nome",
+    "email": "Insira o e-mail",
+    "invalidEmail": "E-mail inválido",
+    "passwordNotEqual": "As senhas não são iguais",
+    "language": "Informe a linguagem"
   },
   "titles": {
     "flaggers": "Flaggers",
     "companies": "Empresas",
+    "login": "Login",
     "legends": "Legendas",
     "chartCompaniesInRollouts": "Quantidade de empresas por rollout",
     "flaggersExpirateded": "Rollouts expirados",
@@ -47,11 +67,19 @@
     "rollouts_1": "Rollout Parcial",
     "rollouts_2": "Rollout Full",
     "remove": "Remover",
-    "add": "Adicionar"
+    "add": "Adicionar",
+    "inactive": "Inativar",
+    "active": "Ativar",
+    "about": "Detalhes"
   },
   "placeHolders": {
     "search": "Pesquisar...",
-    "type_it": "Digite..."
+    "type_it": "Digite...",
+    "name": "Digite o nome",
+    "email": "Digite o e-mail",
+    "password": "Senha",
+    "repeatPassword": "Repita a senha",
+    "language": "Selecione a linguagem"
   },
   "popsconfirm": {
     "full_rollout": {
@@ -59,16 +87,28 @@
       "description": "Você deseja colocar em full rollout?",
       "description_2": "Você deseja remover do full rollout?"
     },
+    "update_status": {
+      "title": "Atualizar status",
+      "description": "Você deseja inativar o usuário?",
+      "description_2": "Você deseja ativar o usuário?"
+    },
     "remove_flagger": {
       "title": "Remover flagger",
       "description": "Deseja remover a flagger "
+    },
+    "remove_user": {
+      "title": "Remover usuário",
+      "description": "Deseja remover o usuário?"
     }
   },
   "responsesAPI": {
     "err_get_rollouts": "Erro ao buscar os rollouts 🤔",
-    "succes_create_rollout": "Flagger registrada 🥰",
+    "succes_create_rollout": "Flagger registrada 🫡",
     "add_full_rollout": "Colocado em full rollout 🫡",
     "remove_full_rollout": "Tirado do full rollout 🫡",
+    "update_status": "Status atualizado 🫡",
+    "remove_user": "Usuário removido 🫡",
+    "update_user": "Usuário atualizado 🫡",
     "err_add_full_rollout": "Erro ao colocar em full rollout 🤔",
     "err_remove_full_rollout": "Erro ao remover do full rollout 🤔"
   }

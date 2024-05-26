@@ -7,6 +7,7 @@ import Search from "antd/es/transfer/search";
 import { TRollout } from "@/types/rollout";
 import { TranslationServiceImpl } from "@/services/translate";
 import { Language } from "@/types/language";
+import { StorageServiceImpl } from "@/services/storage";
 
 const DrawerRelease = ({ show, handleClose, flagger }: any) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -17,6 +18,7 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
   const [valueSearch, setValueSearch] = useState<string>("");
   const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
+  const storage = new StorageServiceImpl();
   const translation = new TranslationServiceImpl();
   const [language, setLanguage] = useState<Language>();
 
@@ -26,7 +28,7 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
 
     if (toAdd.length > 0) {
       await axiosInstance
-        .put(`/release/${rollout!.flagger}`, { ids: toAdd })
+        .put(`/concierge/release/${rollout!.flagger}`, { ids: toAdd })
         .then((res) => {
           setLoading(false);
           messageApi.success(res.data.message);
@@ -40,7 +42,7 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
 
     if (toRemove.length > 0) {
       await axiosInstance
-        .put(`/unrelease/${rollout!.flagger}`, { ids: toRemove })
+        .put(`/concierge/unrelease/${rollout!.flagger}`, { ids: toRemove })
         .then((res) => {
           setLoading(false);
           messageApi.success(res.data.message);
@@ -58,14 +60,14 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
   const getRollout = async (flagger: string) => {
     setLoading(true);
     await axiosInstance
-      .get(`/${flagger}`)
+      .get(`/concierge/${flagger}`)
       .then((res) => {
         setLoading(false);
-        if (res.data.payload.ids === null) res.data.payload.ids = [];
-        setRollout(res.data.payload);
-        if (res.data.payload.ids) {
-          setIds(res.data.payload.ids);
-          setOriginalIds(res.data.payload.ids);
+        if (res.data.ids === null) res.data.ids = [];
+        setRollout(res.data);
+        if (res.data.ids) {
+          setIds(res.data.ids);
+          setOriginalIds(res.data.ids);
         }
       })
       .catch((reason) => {
@@ -156,14 +158,17 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
         onClose={() => handleClose()}
         title={language?.drawers.release}
         extra={
-          <Space>
-            <Button onClick={() => handleClose()}>
-              {language?.actions_buttons.cancel}
-            </Button>
-            <Button type="primary" loading={loading} onClick={onFinish}>
-              {language?.actions_buttons.save}
-            </Button>
-          </Space>
+          (storage.getData("permissions").admin ||
+            storage.getData("permissions").update_release) && (
+            <Space>
+              <Button onClick={() => handleClose()}>
+                {language?.actions_buttons.cancel}
+              </Button>
+              <Button type="primary" loading={loading} onClick={onFinish}>
+                {language?.actions_buttons.save}
+              </Button>
+            </Space>
+          )
         }
       >
         <h3 className="title-flagger">{rollout?.flagger}</h3>
@@ -184,6 +189,10 @@ const DrawerRelease = ({ show, handleClose, flagger }: any) => {
             placeHolder={language?.placeHolders.type_it}
             classNames={{ input: "input-tag" }}
             onRemoved={handleRemoveTag}
+            disabled={
+              !storage.getData("permissions").admin &&
+              !storage.getData("permissions").update_release
+            }
           />
         </div>
       </Drawer>

@@ -1,5 +1,6 @@
 {
   "copy": "Created by Aldo Frota",
+  "welcome": "Welcome to Concierge",
   "menu": {
     "data": "Dashboard",
     "rollouts": "Rollouts",
@@ -11,65 +12,104 @@
     "save": "Save",
     "yes": "Yes",
     "no": "No",
-    "logout": "Logout"
+    "logout": "Logout",
+    "create_new": "Create new",
+    "enter": "Enter",
+    "entering": "Entering"
   },
   "drawers": {
     "register_flagger": "Register flagger",
     "profile": "Profile",
     "release": "Release",
-    "register_user": "Register user"
+    "register_user": "Register user",
+    "user_data": "User data"
   },
   "labels_form": {
+    "name": "Name",
+    "email": "Email",
+    "status": "Status",
     "password": "Password",
+    "language": "Language",
+    "create_rollout": "Create rollout",
+    "update_release": "Update release",
+    "remove_rollout": "Remove rollout",
+    "update_user": "Edit user",
+    "admin": "Administrator",
     "confirmPassword": "Confirm Password",
-    "flagger": "Flagger Name",
+    "flagger": "Flagger name",
     "expiration_at": "Expiration Date",
     "full_rollout": "Full rollout",
     "description": "Description"
   },
   "rules": {
-    "password": "Enter the Password!",
+    "password": "Enter the password",
     "flagger": "Enter the flagger",
     "expiration_at": "Enter the expiration date",
-    "description": "Enter the description"
+    "description": "Enter the description",
+    "name": "Enter the name",
+    "email": "Enter the email",
+    "invalidEmail": "Invalid email",
+    "passwordNotEqual": "Passwords do not match",
+    "language": "Select the language"
   },
   "titles": {
     "flaggers": "Flaggers",
     "companies": "Companies",
+    "login": "Login",
     "legends": "Legends",
-    "chartCompaniesInRollouts": "Number of Companies per Rollout",
+    "chartCompaniesInRollouts": "Number of companies per rollout",
     "flaggersExpirateded": "Expired Rollouts",
-    "notFlaggersExpirateded": "No Expired Rollouts"
+    "notFlaggersExpirateded": "No expired rollouts"
   },
   "tooltips": {
-    "ids_release": "IDs in the release",
+    "ids_release": "Ids in release",
     "rollouts_0": "Empty rollout",
     "rollouts_1": "Partial rollout",
     "rollouts_2": "Full rollout",
     "remove": "Remove",
-    "add": "Add"
+    "add": "Add",
+    "inactive": "Inactive",
+    "active": "Active",
+    "about": "Details"
   },
   "placeHolders": {
     "search": "Search...",
-    "type_it": "Type..."
+    "type_it": "Type...",
+    "name": "Type the name",
+    "email": "Type the email",
+    "password": "Password",
+    "repeatPassword": "Repeat password",
+    "language": "Select the language"
   },
   "popsconfirm": {
     "full_rollout": {
       "title": "Full rollout",
-      "description": "Do you want to set to full rollout?",
+      "description": "Do you want to put in full rollout?",
       "description_2": "Do you want to remove from full rollout?"
+    },
+    "update_status": {
+      "title": "Update status",
+      "description": "Do you want to deactivate the user?",
+      "description_2": "Do you want to activate the user?"
     },
     "remove_flagger": {
       "title": "Remove flagger",
-      "description": "Do you want to remove the flagger"
+      "description": "Do you want to remove the flagger?"
+    },
+    "remove_user": {
+      "title": "Remove user",
+      "description": "Do you want to remove the user?"
     }
   },
   "responsesAPI": {
-    "err_get_rollouts": "Error fetching the rollouts 🤔",
+    "err_get_rollouts": "Error fetching rollouts 🤔",
     "succes_create_rollout": "Flagger registered 🥰",
-    "add_full_rollout": "Set to full rollout 🫡",
-    "remove_full_rollout": "Removed from full rollout 🫡",
-    "err_add_full_rollout": "Error setting to full rollout 🤔",
+    "add_full_rollout": "Put in full rollout 🫡",
+    "remove_full_rollout": "Taken out of full rollout 🫡",
+    "update_status": "Status updated 🫡",
+    "update_user": "User updated 🫡",
+    "remove_user": "User removed 🫡",
+    "err_add_full_rollout": "Error putting in full rollout 🤔",
     "err_remove_full_rollout": "Error removing from full rollout 🤔"
   }
 }

@@ -28,7 +28,6 @@ type CreateUserRequest struct {
 		CreateRollout bool `json:"create_rollout"`
 		UpdateRelease bool `json:"update_release"`
 		RemoveRollout bool `json:"remove_rollout"`
-		CreateUser    bool `json:"create_user"`
 		Admin         bool `json:"admin"`
 	} `json:"permissions"`
 }
@@ -70,7 +69,6 @@ func (controller *ConciergeCreateUserController) Handle(ctx *gin.Context) protoc
 			CreateRollout: requestBody.Permissions.CreateRollout,
 			UpdateRelease: requestBody.Permissions.UpdateRelease,
 			RemoveRollout: requestBody.Permissions.RemoveRollout,
-			CreateUser:    requestBody.Permissions.CreateUser,
 			Admin:         requestBody.Permissions.Admin,
 		},
 	}

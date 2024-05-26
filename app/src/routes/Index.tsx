@@ -79,9 +79,13 @@ const PrivateRoutes = () => {
       >
         <div className="logo-menu">
           {collapsed ? (
-            <img className="close" src="/favicon.ico" alt="" />
+            <img
+              className="close"
+              src="/favicon-white.ico"
+              alt="Icone concierge"
+            />
           ) : (
-            <img className="open" src="/logo.png" alt="" />
+            <img className="open" src="/logo-white.png" alt="Logo concierge" />
           )}
         </div>
         <Menu
@@ -119,7 +123,14 @@ const PrivateRoutes = () => {
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Concierge ©{new Date().getFullYear()} {language?.copy}
+          Concierge ©{new Date().getFullYear()}{" "}
+          <a
+            href="https://github.com/aldofrota"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {language?.copy}
+          </a>
         </Footer>
       </Layout>
     </Layout>
