@@ -1,3 +1,5 @@
+src/config/env.json
+
 # Logs
 logs
 *.log

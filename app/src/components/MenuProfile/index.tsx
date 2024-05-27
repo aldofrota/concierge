@@ -1,7 +1,7 @@
 import "./index.scss";
 import { useEffect, useState } from "react";
 import { Dropdown, MenuProps } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { StorageServiceImpl } from "../../services/storage";
 import { User } from "../../types/user";
 import DrawerProfileUser from "../drawer/Profile";

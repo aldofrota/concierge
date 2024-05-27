@@ -19,20 +19,9 @@ services:
       - mongodb_data:/data/db
 
   api:
-    build:
-      context: ./api
-      dockerfile: .docker/dockerfiles/Dockerfile
-    entrypoint: ["bash", "./.docker/entrypoints/entrypoint-dev.sh"]
+    image: aldofrotaa/concierge-api:v1.0
     container_name: api
     restart: always
-    healthcheck:
-      test:
-        ["CMD", "bash", "-c", "curl -f http://localhost:9989/health || exit 1"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
-    tty: true
     ports:
       - 50051:50051
       - 9989:9989
@@ -49,16 +38,18 @@ services:
   app:
     build:
       context: ./app
-      dockerfile: ./.docker/Dockerfile
     container_name: app
-    entrypoint: sh ./.docker/entrypoint.sh
+    # entrypoint: sh ./.docker/entrypoint.sh
     restart: always
     depends_on:
       - api
     ports:
-      - 3000:3000
-    volumes:
-      - ./app:/usr/concierge/app
+      - 3000:8080
+    # volumes:
+    #   - ./app:/usr/concierge/app
+    environment:
+      API: "http://localhost:9989"
+      KEY_ENCRIPTY: "concierge-app"
 
 volumes:
   mongodb_data:

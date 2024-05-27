@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-import env from "../config/env.json";
+import env from "@env";
 
 interface StorageService {
   setData(key: string, data: any): any;
@@ -35,10 +35,10 @@ export class StorageServiceImpl implements StorageService {
   }
 }
 function encrypt(text: string) {
-  return CryptoJS.AES.encrypt(text, env.keyEncripy).toString();
+  return CryptoJS.AES.encrypt(text, env.KEY_ENCRIPTY).toString();
 }
 
 function decrypt(text: string) {
-  const bytes = CryptoJS.AES.decrypt(text, env.keyEncripy);
+  const bytes = CryptoJS.AES.decrypt(text, env.KEY_ENCRIPTY);
   return bytes.toString(CryptoJS.enc.Utf8);
 }
