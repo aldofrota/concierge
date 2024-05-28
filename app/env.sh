@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Recriar o arquivo de configuração
-rm -rf ./public/config/env.json
-touch ./public/config/env.json
+rm -rf ./src/env-config.ts
+touch ./src/env-config.ts
 
 # Adicionar a abertura do objeto JSON
-echo "{" >> ./public/config/env.json
+echo "{" >> ./src/env-config.ts
 
 # Ler cada linha no arquivo .env
 # Cada linha representa pares chave-valor
@@ -32,11 +32,11 @@ do
   fi
 
   # Associar a propriedade de configuração ao arquivo JSON
-  echo "  \"$varname\": \"$value\"," >> ./public/config/env.json
+  echo "  \"$varname\": \"$value\"," >> ./src/env-config.ts
 done < .env
 
 # Remover a vírgula da última linha
-sed -i '$ s/,$//' ./public/config/env.json
+sed -i '$ s/,$//' ./src/env-config.ts
 
 # Adicionar o fechamento do objeto JSON
-echo "}" >> ./public/config/env.json
+echo "}" >> ./src/env-config.ts

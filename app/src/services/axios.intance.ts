@@ -1,5 +1,6 @@
 import axios from "axios";
-import env from "@env";
+import env from "@/env-config";
+
 import { StorageServiceImpl } from "./storage";
 
 const axiosInstance = axios.create({

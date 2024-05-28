@@ -10,7 +10,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": "/src",
-      "@env": "/public/config/env.json",
     },
   },
 });

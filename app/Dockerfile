@@ -6,9 +6,16 @@ WORKDIR /app
 
 # Copia os arquivos do projeto para o diretório de trabalho
 COPY . .
-
+ARG API_URL
+ENV API=$API_URL
 # Instala as dependências
 RUN npm install
+
+# Tornar nosso script do shell executável
+RUN chmod +x env.prod.sh
+
+RUN ./env.prod.sh
+
 RUN npm run build
 
 # Estágio de produção
@@ -19,8 +26,6 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copiar o arquivo .env e o script do shell no contêiner
 WORKDIR /usr/share/nginx/html
-COPY ./env.prod.sh .
-COPY .env .
 
 # Configura o Nginx
 RUN rm /etc/nginx/conf.d/default.conf
@@ -37,11 +42,5 @@ RUN echo "}" >> /etc/nginx/conf.d/default.conf
 # Expõe a porta 80 para o mundo exterior
 EXPOSE 8080
 
-# Adicionar o bash
-RUN apk add --no-cache bash
-
-# Tornar nosso script do shell executável
-RUN chmod +x env.prod.sh
-
 # Comando de inicialização do Nginx
-CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.prod.sh && nginx -g \"daemon off;\""]
+CMD ["nginx", "-g", "daemon off;"]

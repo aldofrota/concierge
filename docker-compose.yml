@@ -38,6 +38,8 @@ services:
   app:
     build:
       context: ./app
+      args:
+        API_URL: http://localhost
     container_name: app
     # entrypoint: sh ./.docker/entrypoint.sh
     restart: always
@@ -47,9 +49,6 @@ services:
       - 3000:8080
     # volumes:
     #   - ./app:/usr/concierge/app
-    environment:
-      API: "http://localhost:9989"
-      KEY_ENCRIPTY: "concierge-app"
 
 volumes:
   mongodb_data:

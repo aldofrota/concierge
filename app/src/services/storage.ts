@@ -1,5 +1,5 @@
 import CryptoJS from "crypto-js";
-import env from "@env";
+import env from "@/env-config";
 
 interface StorageService {
   setData(key: string, data: any): any;
